@@ -82,8 +82,17 @@ runs:
           # Pull the new image
           docker compose -f docker-compose.prod.yml pull backend-blue backend-green
 
-          # Determine which slot is currently active
-          UPSTREAM=$(cat nginx/upstream.conf)
+          # Determine which slot is currently active (default to blue on first deploy)
+          if [[ ! -f nginx/upstream.conf ]]; then
+            echo "No upstream.conf found — initialising to blue"
+            cat > nginx/upstream.conf << EOF
+  upstream dumbbell_backend {
+  server dumbbell-backend-blue:8080;
+}
+  EOF
+  fi
+  
+  UPSTREAM=$(cat nginx/upstream.conf)
           if echo "$UPSTREAM" | grep -q "backend-blue"; then
             ACTIVE=blue
             INACTIVE=green
