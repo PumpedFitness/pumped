@@ -14,6 +14,7 @@ class WorkoutSessionSetMapper {
             setIndex = dto.setIndex,
             reps = dto.reps,
             weight = dto.weight,
+            rpe = dto.rpe,
             restSeconds = dto.restSeconds,
             durationSeconds = dto.durationSeconds,
             notes = dto.notes,
