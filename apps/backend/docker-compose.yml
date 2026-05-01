@@ -41,6 +41,7 @@ services:
 
 networks:
   dumbbell-net:
+    external: true
     name: dumbbell-net
 
 volumes:
