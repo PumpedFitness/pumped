@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -26,26 +27,16 @@ import java.security.Principal
 import java.time.Duration
 import java.util.*
 
-@RestController()
-@RequestMapping("/user")
+@RestController
+@RequestMapping("/user", version = "1")
 @Tag(name = "User", description = "User registration, authentication, and profile management")
 class UserController(
-    @Autowired
-    val userRegisterMapper: UserRegisterMapper,
-
-    @Autowired
-    val userServicePort: UserServicePort,
-
-    @Autowired
-    private var authenticationManager: AuthenticationManager,
-
-    @Autowired
-    val jwtUtil: JwtUtil,
-
-    @Autowired
-    val jwtService: JwtServicePort,
-
-    ) {
+    @Autowired val userRegisterMapper: UserRegisterMapper,
+    @Autowired val userServicePort: UserServicePort,
+    @Autowired private var authenticationManager: AuthenticationManager,
+    @Autowired val jwtUtil: JwtUtil,
+    @Autowired val jwtService: JwtServicePort,
+) {
 
     @Operation(
         summary = "Register a new user",
@@ -56,8 +47,8 @@ class UserController(
         ApiResponse(responseCode = "400", description = "Invalid request body (validation failure)"),
         ApiResponse(responseCode = "409", description = "Username already taken"),
     )
-    @PostMapping()
-    fun registerUser(@RequestBody userRegisterRequest: UserRegisterRequest): ResponseEntity<UserRegisterResponse> {
+    @PostMapping("/register")
+    fun registerUser(@Valid @RequestBody userRegisterRequest: UserRegisterRequest): ResponseEntity<UserRegisterResponse> {
         val userDto = userRegisterMapper.toDto(userRegisterRequest)
         val registeredUser = userServicePort.registerUser(userDto)
         val body = userRegisterMapper.toResponse(registeredUser)
@@ -70,7 +61,7 @@ class UserController(
         ApiResponse(responseCode = "401", description = "Invalid credentials"),
     )
     @PostMapping("/login")
-    fun loginUser(@RequestBody userLoginRequest: UserLoginRequest): ResponseEntity<UserLoginResponse> {
+    fun loginUser(@Valid @RequestBody userLoginRequest: UserLoginRequest): ResponseEntity<UserLoginResponse> {
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 userLoginRequest.username,
@@ -91,7 +82,7 @@ class UserController(
         ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
     )
     @SecurityRequirement(name = "bearerAuth")
-    @GetMapping("/auth/me")
+    @GetMapping("/me")
     fun getMe(principal: Principal): ResponseEntity<GetMeResponse> {
         val user = userServicePort.findUserById(principal.name)
         val getMeResponse = GetMeResponse(
@@ -103,13 +94,43 @@ class UserController(
         return ResponseEntity.ok(getMeResponse)
     }
 
+    @Operation(
+        summary = "Update current user profile",
+        description = "Updates the username, description, and/or profile picture of the currently authenticated user."
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Profile updated, returns updated profile"),
+        ApiResponse(responseCode = "400", description = "Invalid request body"),
+        ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+    )
+    @SecurityRequirement(name = "bearerAuth")
+    @PutMapping("/me")
+    fun updateMe(
+        @Valid @RequestBody updateMeRequest: UpdateMeRequest,
+        principal: Principal
+    ): ResponseEntity<GetMeResponse> {
+        val updatedUser = userServicePort.updateUser(
+            userId = principal.name,
+            updateMeRequest.username,
+            updateMeRequest.description,
+            updateMeRequest.profilePictureUrl
+        )
+        val response = GetMeResponse(
+            username = updatedUser.username,
+            description = updatedUser.description,
+            profilePicture = updatedUser.profilePicture,
+            updatedAt = updatedUser.updated
+        )
+        return ResponseEntity.ok(response)
+    }
+
     @Operation(summary = "Logout", description = "Invalidates the current JWT token by adding it to the denylist.")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "Successfully logged out"),
         ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
     )
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     fun logoutUser(request: HttpServletRequest): ResponseEntity<Unit> {
         val authHeader = request.getHeader("Authorization")
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -125,14 +146,14 @@ class UserController(
 
     @Operation(
         summary = "Refresh JWT token",
-        description = "Issues a new JWT token and invalidates the current one. The username in the request body must match the authenticated user."
+        description = "Issues a new JWT token and invalidates the current one."
     )
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "New JWT token returned"),
         ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
     )
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/auth/refresh")
+    @PostMapping("/refresh")
     fun refreshToken(
         @RequestBody userSessionRefreshRequest: UserSessionRefreshRequest,
         request: HttpServletRequest
@@ -144,32 +165,5 @@ class UserController(
         val remainingMillis = Duration.between(Date().toInstant(), oldTokenExpiration.toInstant()).toMillis()
         jwtService.denyToken(oldToken, remainingMillis)
         return ResponseEntity.ok(UserLoginResponse(newToken))
-    }
-
-    @Operation(
-        summary = "Update current user profile",
-        description = "Updates the username, description, and/or profile picture of the currently authenticated user."
-    )
-    @ApiResponses(
-        ApiResponse(responseCode = "200", description = "Profile updated, returns updated profile"),
-        ApiResponse(responseCode = "400", description = "Invalid request body"),
-        ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
-    )
-    @SecurityRequirement(name = "bearerAuth")
-    @PutMapping("/auth/me")
-    fun updateMe(@RequestBody updateMeRequest: UpdateMeRequest, principal: Principal): ResponseEntity<GetMeResponse> {
-        val updatedUser = userServicePort.updateUser(
-            userId = principal.name,
-            updateMeRequest.username,
-            updateMeRequest.description,
-            updateMeRequest.profilePictureUrl
-        )
-        val response = GetMeResponse(
-            username = updatedUser.username,
-            description = updatedUser.description,
-            profilePicture = updatedUser.profilePicture,
-            updatedAt = updatedUser.updated
-        )
-        return ResponseEntity.ok(response)
     }
 }
