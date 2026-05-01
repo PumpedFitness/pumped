@@ -73,8 +73,8 @@ jobs:
           redis-password: ${{ secrets.REDIS_PASSWORD }}
 
   deploy:
-    needs: publish
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: [ publish, bootstrap ]
+    if: github.event_name == 'workflow_dispatch' && inputs.bootstrap == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
