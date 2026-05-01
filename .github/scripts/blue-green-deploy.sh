@@ -35,19 +35,27 @@ docker compose -f docker-compose.prod.yml up -d --no-deps "backend-${INACTIVE}"
 
 # Wait for it to be healthy
 echo "Waiting for backend-${INACTIVE} to be healthy..."
-for i in $(seq 1 24); do
+HEALTHY=false
+for i in $(seq 1 36); do
   STATUS=$(docker inspect --format='{{.State.Health.Status}}' "dumbbell-backend-${INACTIVE}" 2>/dev/null || echo "starting")
-  echo "  attempt $i: $STATUS"
+  echo "  attempt $i/36: $STATUS"
   if [ "$STATUS" = "healthy" ]; then
+    HEALTHY=true
     break
   fi
-  if [ "$i" = "24" ]; then
-    echo "backend-${INACTIVE} failed to become healthy — aborting, keeping $ACTIVE live"
+  if [ "$STATUS" = "unhealthy" ]; then
+    echo "backend-${INACTIVE} is unhealthy — aborting, keeping $ACTIVE live"
     docker compose -f docker-compose.prod.yml stop "backend-${INACTIVE}"
     exit 1
   fi
   sleep 5
 done
+
+if [ "$HEALTHY" != "true" ]; then
+  echo "backend-${INACTIVE} did not become healthy within 3 minutes — aborting, keeping $ACTIVE live"
+  docker compose -f docker-compose.prod.yml stop "backend-${INACTIVE}"
+  exit 1
+fi
 
 # Swap nginx upstream to the new slot
 cat > nginx/upstream.conf << EOF
@@ -56,7 +64,13 @@ upstream dumbbell_backend {
 }
 EOF
 
-docker compose -f docker-compose.prod.yml exec -T nginx nginx -s reload
+# Reload nginx if running, otherwise start it
+if docker ps --filter "name=dumbbell-nginx" --filter "status=running" --format '{{.Names}}' | grep -q dumbbell-nginx; then
+  docker compose -f docker-compose.prod.yml exec -T nginx nginx -s reload
+else
+  echo "nginx not running — starting it"
+  docker compose -f docker-compose.prod.yml up -d --no-deps nginx
+fi
 
 echo "Traffic switched to backend-${INACTIVE}"
 
