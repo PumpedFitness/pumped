@@ -75,7 +75,10 @@ jobs:
 
   deploy:
     needs: [ publish, bootstrap ]
-    if: github.event_name == 'workflow_dispatch' && inputs.bootstrap == true
+    if: |
+      always() &&
+      needs.publish.result == 'success' &&
+      (needs.bootstrap.result == 'success' || needs.bootstrap.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
