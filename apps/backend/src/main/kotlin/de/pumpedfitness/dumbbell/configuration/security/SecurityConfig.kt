@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
@@ -32,10 +32,26 @@ class SecurityConfig(
 
     @Bean
     @Order(1)
-    fun swaggerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun swaggerSecurityFilterChain(
+        http: HttpSecurity,
+        @Value("\${swagger.username}") username: String,
+        @Value("\${swagger.password}") password: String,
+        passwordEncoder: PasswordEncoder
+    ): SecurityFilterChain {
+        val inMemoryUsers = InMemoryUserDetailsManager(
+            User.builder()
+                .username(username)
+                .password(passwordEncoder.encode(password))
+                .roles("SWAGGER")
+                .build()
+        )
+        val authProvider = DaoAuthenticationProvider(inMemoryUsers)
+        authProvider.setPasswordEncoder(passwordEncoder)
+
         http
             .securityMatcher("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
             .csrf { it.disable() }
+            .authenticationProvider(authProvider)
             .authorizeHttpRequests { it.anyRequest().authenticated() }
             .httpBasic {}
 
@@ -57,20 +73,6 @@ class SecurityConfig(
             .addFilterAfter(jwtDenylistFilter, JwtAuthFilter::class.java)
 
         return http.build()
-    }
-
-    @Bean
-    fun swaggerUserDetailsService(
-        @Value("\${swagger.username}") username: String,
-        @Value("\${swagger.password}") password: String,
-        passwordEncoder: PasswordEncoder
-    ): UserDetailsService {
-        val user = User.builder()
-            .username(username)
-            .password(passwordEncoder.encode(password))
-            .roles("SWAGGER")
-            .build()
-        return InMemoryUserDetailsManager(user)
     }
 
     @Bean
