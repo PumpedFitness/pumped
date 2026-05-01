@@ -66,8 +66,7 @@ runs:
           ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} << 'ENDSSH'
           set -euo pipefail
 
-          export IMAGE_OWNER="{{ inputs.image-name }}"
-          IMAGE_OWNER=$(echo "$IMAGE_OWNER" | cut -d'/' -f2)
+          export IMAGE_NAME="${{ inputs.image-name }}"
           export IMAGE_TAG="${{ inputs.image-tag }}"
           export DB_USER="${{ inputs.db-user }}"
           export DB_PASSWORD="${{ inputs.db-password }}"

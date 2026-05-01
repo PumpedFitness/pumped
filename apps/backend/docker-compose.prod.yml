@@ -1,6 +1,6 @@
 services:
   backend-blue:
-    image: ghcr.io/${IMAGE_OWNER}/dumbbell-backend:${IMAGE_TAG:-latest}
+    image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
     container_name: dumbbell-backend-blue
     restart: unless-stopped
     environment:
@@ -25,7 +25,7 @@ services:
       start_period: 30s
 
   backend-green:
-    image: ghcr.io/${IMAGE_OWNER}/dumbbell-backend:${IMAGE_TAG:-latest}
+    image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
     container_name: dumbbell-backend-green
     restart: unless-stopped
     environment:
