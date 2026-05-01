@@ -5,6 +5,11 @@ set -euo pipefail
 # push-secrets.sh
 # Reads secrets from .env in the repo root and pushes them to GitHub via gh CLI.
 # Usage: ./toolbox/push-secrets.sh
+#
+# Supports multiline values (e.g. SSH private keys) using quoted blocks:
+#   SSH_PRIVATE_KEY="-----BEGIN OPENSSH PRIVATE KEY-----
+#   ...
+#   -----END OPENSSH PRIVATE KEY-----"
 # ---------------------------------------------------------------------------
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -44,27 +49,63 @@ echo ""
 
 PUSHED=0
 SKIPPED=0
+KEY=""
+VALUE=""
+IN_MULTILINE=false
 
-while IFS= read -r line || [[ -n "$line" ]]; do
-  # Skip empty lines and comments
-  [[ -z "$line" || "$line" =~ ^# ]] && continue
-
-  # Split on first = only
-  KEY="${line%%=*}"
-  VALUE="${line#*=}"
-
-  # Skip keys with empty values
+flush() {
+  if [[ -z "$KEY" ]]; then return; fi
   if [[ -z "$VALUE" ]]; then
     echo "  SKIP  ${KEY}  (no value set)"
-    ((SKIPPED++))
+    SKIPPED=$((SKIPPED + 1))
+  else
+    gh secret set "$KEY" --body "$VALUE" --repo "$REPO"
+    echo "  SET   ${KEY}"
+    PUSHED=$((PUSHED + 1))
+  fi
+  KEY=""
+  VALUE=""
+}
+
+while IFS= read -r line || [[ -n "$line" ]]; do
+  # Skip empty lines and comments (outside multiline blocks)
+  if [[ "$IN_MULTILINE" == false ]]; then
+    [[ -z "$line" || "$line" =~ ^# ]] && continue
+  fi
+
+  if [[ "$IN_MULTILINE" == true ]]; then
+    # Check if this line closes the multiline value (ends with a quote)
+    if [[ "$line" == *'"' ]]; then
+      VALUE="${VALUE}"$'\n'"${line%\"}"
+      IN_MULTILINE=false
+      flush
+    else
+      VALUE="${VALUE}"$'\n'"${line}"
+    fi
     continue
   fi
 
-  gh secret set "$KEY" --body "$VALUE" --repo "$REPO"
-  echo "  SET   ${KEY}"
-  ((PUSHED++))
+  # Split on first = only
+  KEY="${line%%=*}"
+  RAW="${line#*=}"
+
+  # Check if value starts with a quote but doesn't end with one (multiline)
+  if [[ "$RAW" == '"'* && "$RAW" != *'"' || "$RAW" == '"' ]]; then
+    VALUE="${RAW#\"}"
+    IN_MULTILINE=true
+    continue
+  fi
+
+  # Strip surrounding quotes from single-line values
+  VALUE="${RAW%\"}"
+  VALUE="${VALUE#\"}"
+
+  flush
 
 done < "$ENV_FILE"
+
+# Flush last entry if file doesn't end with newline
+flush
 
 echo ""
 echo "Done — ${PUSHED} secret(s) pushed, ${SKIPPED} skipped."
