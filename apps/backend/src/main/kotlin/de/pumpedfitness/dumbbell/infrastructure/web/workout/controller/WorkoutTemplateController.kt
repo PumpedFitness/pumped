@@ -1,8 +1,10 @@
 package de.pumpedfitness.dumbbell.infrastructure.web.workout.controller
 
+import de.pumpedfitness.dumbbell.application.dto.WorkoutTemplateScheduleDto
 import de.pumpedfitness.dumbbell.application.port.`in`.WorkoutTemplateServicePort
 import de.pumpedfitness.dumbbell.infrastructure.web.workout.dto.request.CreateWorkoutTemplateRequest
 import de.pumpedfitness.dumbbell.infrastructure.web.workout.dto.request.UpdateWorkoutTemplateRequest
+import de.pumpedfitness.dumbbell.infrastructure.web.workout.dto.request.WorkoutTemplateScheduleRequest
 import de.pumpedfitness.dumbbell.infrastructure.web.workout.dto.response.WorkoutTemplateResponse
 import de.pumpedfitness.dumbbell.infrastructure.web.workout.mapper.WorkoutTemplateMapper
 import io.swagger.v3.oas.annotations.Operation
@@ -67,6 +69,7 @@ class WorkoutTemplateController(
             userId = principal.name,
             name = request.name,
             description = request.description,
+            schedule = request.schedule?.toApplicationDto(),
         )
         return ResponseEntity.ok(workoutTemplateMapper.toResponse(template))
     }
@@ -89,6 +92,7 @@ class WorkoutTemplateController(
             userId = principal.name,
             name = request.name,
             description = request.description,
+            schedule = request.schedule?.toApplicationDto(),
         )
         return ResponseEntity.ok(workoutTemplateMapper.toResponse(updated))
     }
@@ -106,5 +110,13 @@ class WorkoutTemplateController(
     ): ResponseEntity<Unit> {
         workoutTemplateServicePort.deleteTemplate(templateId, principal.name)
         return ResponseEntity.noContent().build()
+    }
+
+    private fun WorkoutTemplateScheduleRequest.toApplicationDto(): WorkoutTemplateScheduleDto {
+        return WorkoutTemplateScheduleDto(
+            type = type,
+            interval = interval,
+            weekdays = weekdays?.sortedBy { it.ordinal } ?: emptyList(),
+        )
     }
 }
