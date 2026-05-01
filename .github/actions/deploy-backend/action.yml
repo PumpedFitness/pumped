@@ -44,7 +44,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Copy compose and nginx files to server
+    - name: Copy files to server
       shell: bash
       run: |
         echo "${{ inputs.ssh-private-key }}" > /tmp/ssh_key
@@ -58,84 +58,33 @@ runs:
         scp -i /tmp/ssh_key -o StrictHostKeyChecking=no \
           apps/backend/nginx/nginx.conf \
           ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:~/dumbbell/nginx/nginx.conf
+        scp -i /tmp/ssh_key -o StrictHostKeyChecking=no \
+          .github/scripts/blue-green-deploy.sh \
+          ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:~/dumbbell/blue-green-deploy.sh
 
     - name: Blue/green deploy
       shell: bash
+      env:
+        IMAGE_NAME: ${{ inputs.image-name }}
+        IMAGE_TAG: ${{ inputs.image-tag }}
+        REGISTRY_USERNAME: ${{ inputs.registry-username }}
+        REGISTRY_PASSWORD: ${{ inputs.registry-password }}
+        DB_USER: ${{ inputs.db-user }}
+        DB_PASSWORD: ${{ inputs.db-password }}
+        DB_NAME: ${{ inputs.db-name }}
+        REDIS_PASSWORD: ${{ inputs.redis-password }}
+        JWT_SECRET: ${{ inputs.jwt-secret }}
       run: |
         ssh -i /tmp/ssh_key -o StrictHostKeyChecking=no \
-          ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} << 'ENDSSH'
-          set -euo pipefail
-
-          export IMAGE_NAME="${{ inputs.image-name }}"
-          export IMAGE_TAG="${{ inputs.image-tag }}"
-          export DB_USER="${{ inputs.db-user }}"
-          export DB_PASSWORD="${{ inputs.db-password }}"
-          export DB_NAME="${{ inputs.db-name }}"
-          export REDIS_PASSWORD="${{ inputs.redis-password }}"
-          export JWT_SECRET="${{ inputs.jwt-secret }}"
-
-          cd ~/dumbbell
-
-          # Log in to GHCR
-          echo "${{ inputs.registry-password }}" | docker login ghcr.io -u "${{ inputs.registry-username }}" --password-stdin
-
-          # Pull the new image
-          docker compose -f docker-compose.prod.yml pull backend-blue backend-green
-
-          # Determine which slot is currently active (default to blue on first deploy)
-          if [[ ! -f nginx/upstream.conf ]]; then
-            echo "No upstream.conf found — initialising to blue"
-            cat > nginx/upstream.conf << EOF
-  upstream dumbbell_backend {
-  server dumbbell-backend-blue:8080;
-}
-  EOF
-  fi
-  
-  UPSTREAM=$(cat nginx/upstream.conf)
-          if echo "$UPSTREAM" | grep -q "backend-blue"; then
-            ACTIVE=blue
-            INACTIVE=green
-          else
-            ACTIVE=green
-            INACTIVE=blue
-          fi
-
-          echo "Active slot: $ACTIVE — deploying to: $INACTIVE"
-
-          # Start the inactive slot
-          docker compose -f docker-compose.prod.yml up -d --no-deps "backend-${INACTIVE}"
-
-          # Wait for it to be healthy
-          echo "Waiting for backend-${INACTIVE} to be healthy..."
-          for i in $(seq 1 24); do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' "dumbbell-backend-${INACTIVE}" 2>/dev/null || echo "starting")
-            echo "  attempt $i: $STATUS"
-            if [ "$STATUS" = "healthy" ]; then
-              break
-            fi
-            if [ "$i" = "24" ]; then
-              echo "backend-${INACTIVE} failed to become healthy — aborting, keeping $ACTIVE live"
-              docker compose -f docker-compose.prod.yml stop "backend-${INACTIVE}"
-              exit 1
-            fi
-            sleep 5
-          done
-
-          # Swap nginx upstream to the new slot
-          cat > nginx/upstream.conf << EOF
-          upstream dumbbell_backend {
-              server dumbbell-backend-${INACTIVE}:8080;
-          }
-          EOF
-
-          docker compose -f docker-compose.prod.yml exec -T nginx nginx -s reload
-
-          echo "Traffic switched to backend-${INACTIVE}"
-
-          # Stop the old slot
-          docker compose -f docker-compose.prod.yml stop "backend-${ACTIVE}"
-
-          echo "Deploy complete — active slot is now: $INACTIVE"
-        ENDSSH
+          ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
+          "export IMAGE_NAME='${IMAGE_NAME}' \
+           IMAGE_TAG='${IMAGE_TAG}' \
+           REGISTRY_USERNAME='${REGISTRY_USERNAME}' \
+           REGISTRY_PASSWORD='${REGISTRY_PASSWORD}' \
+           DB_USER='${DB_USER}' \
+           DB_PASSWORD='${DB_PASSWORD}' \
+           DB_NAME='${DB_NAME}' \
+           REDIS_PASSWORD='${REDIS_PASSWORD}' \
+           JWT_SECRET='${JWT_SECRET}' && \
+           bash ~/dumbbell/blue-green-deploy.sh"
         rm -f /tmp/ssh_key
