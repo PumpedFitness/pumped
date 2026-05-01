@@ -10,8 +10,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Exercise", description = "Browse and retrieve exercises")
 @SecurityRequirement(name = "bearerAuth")
 class ExerciseController(
-    private final val exerciseService: ExerciseServicePort
+    private val exerciseService: ExerciseServicePort
 ) {
     //TODO: Test this with integrationtests later
     @Operation(summary = "Get all exercises", description = "Returns a list of all available exercises.")
@@ -28,7 +28,7 @@ class ExerciseController(
         ApiResponse(responseCode = "404", description = "No exercises found"),
         ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
     )
-    @GetMapping("/getAll")
+    @GetMapping
     fun getAllExercises(): ResponseEntity<List<ExerciseDto>> {
         val exerciseDtos = exerciseService.getAllExercises()
         if (exerciseDtos.isEmpty()) {
@@ -43,12 +43,12 @@ class ExerciseController(
         ApiResponse(responseCode = "404", description = "Exercise not found"),
         ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
     )
-    @GetMapping
-    fun getSpecificExercise(
+    @GetMapping("/{id}")
+    fun getExerciseById(
         @Parameter(description = "UUID of the exercise to retrieve", required = true)
-        @RequestParam exerciseId: String
+        @PathVariable id: String
     ): ResponseEntity<ExerciseDto> {
-        val exerciseDto = exerciseService.getExerciseById(exerciseId) ?: return ResponseEntity.notFound().build()
+        val exerciseDto = exerciseService.getExerciseById(id) ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(exerciseDto)
     }
 }
