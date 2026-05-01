@@ -62,6 +62,7 @@ class WorkoutSessionSetController(
             setIndex = request.setIndex,
             reps = request.reps,
             weight = request.weight,
+            rpe = request.rpe,
             restSeconds = request.restSeconds,
             durationSeconds = request.durationSeconds,
             notes = request.notes,
