@@ -68,32 +68,29 @@ runs:
           .github/scripts/blue-green-deploy.sh \
           ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:~/dumbbell/blue-green-deploy.sh
 
-    - name: Write env file to server
+    - name: Blue/green deploy
       shell: bash
+      env:
+        IMAGE_NAME: ${{ inputs.image-name }}
+        IMAGE_TAG: ${{ inputs.image-tag }}
+        REGISTRY_USERNAME: ${{ inputs.registry-username }}
+        REGISTRY_PASSWORD: ${{ inputs.registry-password }}
+        DB_USER: ${{ inputs.db-user }}
+        DB_PASSWORD: ${{ inputs.db-password }}
+        DB_NAME: ${{ inputs.db-name }}
+        REDIS_PASSWORD: ${{ inputs.redis-password }}
+        JWT_SECRET: ${{ inputs.jwt-secret }}
+        SWAGGER_USERNAME: ${{ inputs.swagger-username }}
+        SWAGGER_PASSWORD: ${{ inputs.swagger-password }}
       run: |
-        cat > /tmp/deploy.env << 'ENVEOF'
-        IMAGE_NAME=${{ inputs.image-name }}
-        IMAGE_TAG=${{ inputs.image-tag }}
-        REGISTRY_USERNAME=${{ inputs.registry-username }}
-        REGISTRY_PASSWORD=${{ inputs.registry-password }}
-        DB_USER=${{ inputs.db-user }}
-        DB_PASSWORD=${{ inputs.db-password }}
-        DB_NAME=${{ inputs.db-name }}
-        REDIS_PASSWORD=${{ inputs.redis-password }}
-        JWT_SECRET=${{ inputs.jwt-secret }}
-        SWAGGER_USERNAME=${{ inputs.swagger-username }}
-        SWAGGER_PASSWORD=${{ inputs.swagger-password }}
-        ENVEOF
-        sed -i 's/^        //' /tmp/deploy.env
+        printenv | grep -E '^(IMAGE_NAME|IMAGE_TAG|REGISTRY_USERNAME|REGISTRY_PASSWORD|DB_USER|DB_PASSWORD|DB_NAME|REDIS_PASSWORD|JWT_SECRET|SWAGGER_USERNAME|SWAGGER_PASSWORD)=' > /tmp/deploy.env
 
         scp -i /tmp/ssh_key -o StrictHostKeyChecking=no \
           /tmp/deploy.env \
           ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:~/dumbbell/deploy.env
 
-    - name: Blue/green deploy
-      shell: bash
-      run: |
         ssh -i /tmp/ssh_key -o StrictHostKeyChecking=no \
           ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
-          "set -a && source ~/dumbbell/deploy.env && set +a && bash ~/dumbbell/blue-green-deploy.sh && rm -f ~/dumbbell/deploy.env"
-        rm -f /tmp/ssh_key
+          'set -a && source ~/dumbbell/deploy.env && set +a && bash ~/dumbbell/blue-green-deploy.sh; rm -f ~/dumbbell/deploy.env'
+
+        rm -f /tmp/ssh_key /tmp/deploy.env
