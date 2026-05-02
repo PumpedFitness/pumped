@@ -1,10 +1,12 @@
-import {eq, desc, asc, and, isNotNull} from 'drizzle-orm';
-import {db} from '../local/database';
-import {workoutSessionSets} from '../local/schema';
-import {enqueue} from './SyncQueueRepository';
-import type {WorkoutSessionSet} from '../../types/domain';
+import { eq, desc, asc, and, isNotNull } from 'drizzle-orm';
+import { db } from '../local/database';
+import { workoutSessionSets } from '../local/schema';
+import { enqueue } from './SyncQueueRepository';
+import type { WorkoutSessionSet } from '../../types/domain';
 
-function rowToSet(row: typeof workoutSessionSets.$inferSelect): WorkoutSessionSet {
+function rowToSet(
+  row: typeof workoutSessionSets.$inferSelect,
+): WorkoutSessionSet {
   return {
     id: row.id,
     workoutSessionId: row.workoutSessionId,
@@ -20,7 +22,7 @@ function rowToSet(row: typeof workoutSessionSets.$inferSelect): WorkoutSessionSe
 }
 
 export function logSet(set: WorkoutSessionSet): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.insert(workoutSessionSets)
       .values({
         id: set.id,
@@ -40,15 +42,15 @@ export function logSet(set: WorkoutSessionSet): void {
 }
 
 export function deleteSet(id: string): void {
-  db.transaction((tx) => {
-    tx.delete(workoutSessionSets)
-      .where(eq(workoutSessionSets.id, id))
-      .run();
-    enqueue('workout_session_set', id, 'delete', {id});
+  db.transaction(tx => {
+    tx.delete(workoutSessionSets).where(eq(workoutSessionSets.id, id)).run();
+    enqueue('workout_session_set', id, 'delete', { id });
   });
 }
 
-export function getSetsForSession(workoutSessionId: string): WorkoutSessionSet[] {
+export function getSetsForSession(
+  workoutSessionId: string,
+): WorkoutSessionSet[] {
   const rows = db
     .select()
     .from(workoutSessionSets)
@@ -84,10 +86,7 @@ export function getPersonalRecord(
         isNotNull(workoutSessionSets.weight),
       ),
     )
-    .orderBy(
-      desc(workoutSessionSets.weight),
-      desc(workoutSessionSets.reps),
-    )
+    .orderBy(desc(workoutSessionSets.weight), desc(workoutSessionSets.reps))
     .limit(1)
     .get();
   return row ? rowToSet(row) : null;

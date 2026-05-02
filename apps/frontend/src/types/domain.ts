@@ -3,9 +3,13 @@
 // represent the local SQLite row shape (e.g., JSON arrays stored as TEXT).
 
 // Enum types are auto-generated from the backend OpenAPI spec
-import type {MuscleGroup, ExerciseCategory, ExerciseEquipment} from '../data/local/schema.enums.generated';
+import type {
+  MuscleGroup,
+  ExerciseCategory,
+  ExerciseEquipment,
+} from '../data/local/schema.enums.generated';
 
-export type {MuscleGroup, ExerciseCategory, ExerciseEquipment};
+export type { MuscleGroup, ExerciseCategory, ExerciseEquipment };
 
 export type Exercise = {
   id: string;

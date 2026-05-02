@@ -1,5 +1,5 @@
-import {create} from 'zustand';
-import type {Exercise} from '../types/domain';
+import { create } from 'zustand';
+import type { Exercise } from '../types/domain';
 import * as ExerciseRepo from '../data/repositories/ExerciseRepository';
 
 type ExerciseState = {
@@ -16,7 +16,7 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
 
   loadExercises: () => {
     const exercises = ExerciseRepo.getAllExercises();
-    set({exercises, isLoaded: true});
+    set({ exercises, isLoaded: true });
   },
 
   searchExercises: (query: string) => {

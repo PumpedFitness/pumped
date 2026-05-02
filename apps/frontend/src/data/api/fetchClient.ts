@@ -1,6 +1,6 @@
-import {createMMKV} from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 
-const storage = createMMKV({id: 'api-storage'});
+const storage = createMMKV({ id: 'api-storage' });
 
 const BASE_URL_KEY = 'api_base_url';
 const JWT_TOKEN_KEY = 'jwt_token';
@@ -52,7 +52,7 @@ export async function fetchClient<T>(
     ? await response.json()
     : undefined;
 
-  return {data, status: response.status, headers: response.headers} as T;
+  return { data, status: response.status, headers: response.headers } as T;
 }
 
 export class ApiError extends Error {

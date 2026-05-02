@@ -1,7 +1,7 @@
-import {eq, asc, count} from 'drizzle-orm';
-import {db} from '../local/database';
-import {syncQueue} from '../local/schema';
-import type {SyncAction, SyncEntity, SyncQueueEntry} from '../../types/sync';
+import { eq, asc, count } from 'drizzle-orm';
+import { db } from '../local/database';
+import { syncQueue } from '../local/schema';
+import type { SyncAction, SyncEntity, SyncQueueEntry } from '../../types/sync';
 
 export function enqueue(
   entity: SyncEntity,
@@ -31,7 +31,7 @@ export function getPending(limit = 50): SyncQueueEntry[] {
 }
 
 export function getPendingCount(): number {
-  const result = db.select({count: count()}).from(syncQueue).get();
+  const result = db.select({ count: count() }).from(syncQueue).get();
   return result?.count ?? 0;
 }
 
@@ -39,7 +39,7 @@ export function markRetry(id: number, error: string): void {
   const row = db.select().from(syncQueue).where(eq(syncQueue.id, id)).get();
   if (row) {
     db.update(syncQueue)
-      .set({retries: row.retries + 1, lastError: error})
+      .set({ retries: row.retries + 1, lastError: error })
       .where(eq(syncQueue.id, id))
       .run();
   }

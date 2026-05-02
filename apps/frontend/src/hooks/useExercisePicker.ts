@@ -1,10 +1,10 @@
-import {useState, useMemo} from 'react';
-import {useExerciseStore} from '../stores/exerciseStore';
-import type {Exercise, MuscleGroup} from '../types/domain';
+import { useState, useMemo } from 'react';
+import { useExerciseStore } from '../stores/exerciseStore';
+import type { Exercise, MuscleGroup } from '../types/domain';
 
 export function useExercisePicker() {
-  const exercises = useExerciseStore((s) => s.exercises);
-  const searchExercises = useExerciseStore((s) => s.searchExercises);
+  const exercises = useExerciseStore(s => s.exercises);
+  const searchExercises = useExerciseStore(s => s.searchExercises);
   const [query, setQuery] = useState('');
   const [muscleFilter, setMuscleFilter] = useState<MuscleGroup | null>(null);
 
@@ -16,7 +16,7 @@ export function useExercisePicker() {
       filtered = exercises;
     }
     if (muscleFilter) {
-      filtered = filtered.filter((e) => e.muscleGroups.includes(muscleFilter));
+      filtered = filtered.filter(e => e.muscleGroups.includes(muscleFilter));
     }
     return filtered;
   }, [query, muscleFilter, exercises, searchExercises]);
