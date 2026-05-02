@@ -67,21 +67,32 @@ runs:
           .github/scripts/staging-deploy.sh \
           ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:~/dumbbell/staging-deploy.sh
 
+    - name: Write env file to server
+      shell: bash
+      run: |
+        cat > /tmp/staging.env << 'ENVEOF'
+        IMAGE_NAME=${{ inputs.image-name }}
+        IMAGE_TAG=${{ inputs.image-tag }}
+        REGISTRY_USERNAME=${{ inputs.registry-username }}
+        REGISTRY_PASSWORD=${{ inputs.registry-password }}
+        DB_ROOT_PASSWORD=${{ inputs.db-root-password }}
+        DB_USER=${{ inputs.db-user }}
+        DB_PASSWORD=${{ inputs.db-password }}
+        REDIS_PASSWORD=${{ inputs.redis-password }}
+        JWT_SECRET=${{ inputs.jwt-secret }}
+        SWAGGER_USERNAME=${{ inputs.swagger-username }}
+        SWAGGER_PASSWORD=${{ inputs.swagger-password }}
+        ENVEOF
+        sed -i 's/^        //' /tmp/staging.env
+
+        scp -i /tmp/ssh_key -o StrictHostKeyChecking=no \
+          /tmp/staging.env \
+          ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:~/dumbbell/staging.env
+
     - name: Run staging deployment
       shell: bash
       run: |
         ssh -i /tmp/ssh_key -o StrictHostKeyChecking=no \
           ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
-          "export IMAGE_NAME='${{ inputs.image-name }}' \
-           IMAGE_TAG='${{ inputs.image-tag }}' \
-           REGISTRY_USERNAME='${{ inputs.registry-username }}' \
-           REGISTRY_PASSWORD='${{ inputs.registry-password }}' \
-           DB_ROOT_PASSWORD='${{ inputs.db-root-password }}' \
-           DB_USER='${{ inputs.db-user }}' \
-           DB_PASSWORD='${{ inputs.db-password }}' \
-           REDIS_PASSWORD='${{ inputs.redis-password }}' \
-           JWT_SECRET='${{ inputs.jwt-secret }}' \
-           SWAGGER_USERNAME='${{ inputs.swagger-username }}' \
-           SWAGGER_PASSWORD='${{ inputs.swagger-password }}' && \
-           bash ~/dumbbell/staging-deploy.sh"
+          "set -a && source ~/dumbbell/staging.env && set +a && bash ~/dumbbell/staging-deploy.sh && rm -f ~/dumbbell/staging.env"
         rm -f /tmp/ssh_key
