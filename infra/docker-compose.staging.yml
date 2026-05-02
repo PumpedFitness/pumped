@@ -6,9 +6,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.http.routers.backend-staging.rule: "Host(`${STAGING_DOMAIN}`)"
-      traefik.http.routers.backend-staging.entrypoints: "websecure"
-      traefik.http.routers.backend-staging.tls: "true"
-      traefik.http.routers.backend-staging.tls.certresolver: "letsencrypt"
+      traefik.http.routers.backend-staging.entrypoints: "web"
       traefik.http.services.backend-staging.loadbalancer.server.port: "8080"
     environment:
       SPRING_PROFILES_ACTIVE: production
