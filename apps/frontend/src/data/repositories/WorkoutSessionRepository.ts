@@ -1,10 +1,12 @@
-import {eq, desc} from 'drizzle-orm';
-import {db} from '../local/database';
-import {workoutSessions} from '../local/schema';
-import {enqueue} from './SyncQueueRepository';
-import type {WorkoutSession} from '../../types/domain';
+import { eq, desc } from 'drizzle-orm';
+import { db } from '../local/database';
+import { workoutSessions } from '../local/schema';
+import { enqueue } from './SyncQueueRepository';
+import type { WorkoutSession } from '../../types/domain';
 
-function rowToSession(row: typeof workoutSessions.$inferSelect): WorkoutSession {
+function rowToSession(
+  row: typeof workoutSessions.$inferSelect,
+): WorkoutSession {
   return {
     id: row.id,
     userId: row.userId,
@@ -17,7 +19,7 @@ function rowToSession(row: typeof workoutSessions.$inferSelect): WorkoutSession 
 }
 
 export function createSession(session: WorkoutSession): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.insert(workoutSessions)
       .values({
         id: session.id,
@@ -38,19 +40,19 @@ export function finishSession(
   endedAt: number,
   notes: string | null,
 ): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.update(workoutSessions)
-      .set({endedAt, notes})
+      .set({ endedAt, notes })
       .where(eq(workoutSessions.id, id))
       .run();
-    enqueue('workout_session', id, 'update', {id, endedAt, notes});
+    enqueue('workout_session', id, 'update', { id, endedAt, notes });
   });
 }
 
 export function deleteSession(id: string): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.delete(workoutSessions).where(eq(workoutSessions.id, id)).run();
-    enqueue('workout_session', id, 'delete', {id});
+    enqueue('workout_session', id, 'delete', { id });
   });
 }
 

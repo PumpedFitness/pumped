@@ -1,12 +1,12 @@
-import {drizzle} from 'drizzle-orm/expo-sqlite';
-import {openDatabaseSync} from 'expo-sqlite';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { openDatabaseSync } from 'expo-sqlite';
 import * as schema from './schema';
 
 const DB_NAME = 'pumped.db';
 
-const expoDb = openDatabaseSync(DB_NAME, {enableChangeListener: false});
+const expoDb = openDatabaseSync(DB_NAME, { enableChangeListener: false });
 
-export const db = drizzle(expoDb, {schema});
+export const db = drizzle(expoDb, { schema });
 
 export function initDatabase(): void {
   // Enable WAL mode and foreign keys

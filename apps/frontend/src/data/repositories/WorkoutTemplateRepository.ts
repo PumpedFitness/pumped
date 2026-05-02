@@ -1,8 +1,11 @@
-import {eq, desc, asc} from 'drizzle-orm';
-import {db} from '../local/database';
-import {workoutTemplates, workoutTemplateExercises} from '../local/schema';
-import {enqueue} from './SyncQueueRepository';
-import type {WorkoutTemplate, WorkoutTemplateExercise} from '../../types/domain';
+import { eq, desc, asc } from 'drizzle-orm';
+import { db } from '../local/database';
+import { workoutTemplates, workoutTemplateExercises } from '../local/schema';
+import { enqueue } from './SyncQueueRepository';
+import type {
+  WorkoutTemplate,
+  WorkoutTemplateExercise,
+} from '../../types/domain';
 
 function rowToTemplate(
   row: typeof workoutTemplates.$inferSelect,
@@ -39,7 +42,7 @@ export function createTemplate(
   template: WorkoutTemplate,
   exerciseList: WorkoutTemplateExercise[],
 ): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.insert(workoutTemplates)
       .values({
         id: template.id,
@@ -80,7 +83,7 @@ export function updateTemplate(
   template: WorkoutTemplate,
   exerciseList: WorkoutTemplateExercise[],
 ): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.update(workoutTemplates)
       .set({
         name: template.name,
@@ -121,9 +124,9 @@ export function updateTemplate(
 }
 
 export function deleteTemplate(id: string): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.delete(workoutTemplates).where(eq(workoutTemplates.id, id)).run();
-    enqueue('workout_template', id, 'delete', {id});
+    enqueue('workout_template', id, 'delete', { id });
   });
 }
 
@@ -168,7 +171,7 @@ export function upsertTemplateFromRemote(
   template: WorkoutTemplate,
   exerciseList: WorkoutTemplateExercise[],
 ): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     tx.insert(workoutTemplates)
       .values({
         id: template.id,

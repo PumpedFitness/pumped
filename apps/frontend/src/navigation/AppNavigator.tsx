@@ -1,10 +1,10 @@
-import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {MainTabs} from './MainTabs';
-import {LoginScreen} from '../screens/LoginScreen';
-import {ActiveWorkoutScreen} from '../screens/ActiveWorkoutScreen';
-import {HistoryDetailScreen} from '../screens/HistoryDetailScreen';
-import {ExercisePickerScreen} from '../screens/ExercisePickerScreen';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { MainTabs } from './MainTabs';
+import { LoginScreen } from '../screens/LoginScreen';
+import { ActiveWorkoutScreen } from '../screens/ActiveWorkoutScreen';
+import { HistoryDetailScreen } from '../screens/HistoryDetailScreen';
+import { ExercisePickerScreen } from '../screens/ExercisePickerScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -34,24 +34,25 @@ export function AppNavigator() {
   return (
     <NavigationContainer theme={pumped}>
       <Stack.Navigator
-        screenOptions={{headerShown: false}}
-        initialRouteName="Login">
+        screenOptions={{ headerShown: false }}
+        initialRouteName="Login"
+      >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen
           name="ActiveWorkout"
           component={ActiveWorkoutScreen}
-          options={{animation: 'slide_from_bottom'}}
+          options={{ animation: 'slide_from_bottom' }}
         />
         <Stack.Screen
           name="HistoryDetail"
           component={HistoryDetailScreen}
-          options={{animation: 'slide_from_right'}}
+          options={{ animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name="ExercisePicker"
           component={ExercisePickerScreen}
-          options={{animation: 'slide_from_bottom', presentation: 'modal'}}
+          options={{ animation: 'slide_from_bottom', presentation: 'modal' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,7 +1,7 @@
-import {eq, like, asc, count} from 'drizzle-orm';
-import {db} from '../local/database';
-import {exercises} from '../local/schema';
-import type {Exercise} from '../../types/domain';
+import { eq, like, asc, count } from 'drizzle-orm';
+import { db } from '../local/database';
+import { exercises } from '../local/schema';
+import type { Exercise } from '../../types/domain';
 
 function rowToExercise(row: typeof exercises.$inferSelect): Exercise {
   return {
@@ -59,7 +59,7 @@ export function upsertExercise(exercise: Exercise): void {
 }
 
 export function upsertExercises(exerciseList: Exercise[]): void {
-  db.transaction((tx) => {
+  db.transaction(tx => {
     for (const exercise of exerciseList) {
       tx.insert(exercises)
         .values({
@@ -88,6 +88,6 @@ export function upsertExercises(exerciseList: Exercise[]): void {
 }
 
 export function getExerciseCount(): number {
-  const result = db.select({count: count()}).from(exercises).get();
+  const result = db.select({ count: count() }).from(exercises).get();
   return result?.count ?? 0;
 }

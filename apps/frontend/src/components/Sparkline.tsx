@@ -1,8 +1,14 @@
-import {View} from 'react-native';
-import Svg, {Path, Circle, Defs, LinearGradient, Stop} from 'react-native-svg';
-import {colors} from '../theme/tokens';
+import { View } from 'react-native';
+import Svg, {
+  Path,
+  Circle,
+  Defs,
+  LinearGradient,
+  Stop,
+} from 'react-native-svg';
+import { colors } from '../theme/tokens';
 
-function smoothPath(points: {x: number; y: number}[], tension = 0.5): string {
+function smoothPath(points: { x: number; y: number }[], tension = 0.5): string {
   if (points.length < 2) return '';
   const t = tension;
   let d = `M ${points[0].x} ${points[0].y}`;
@@ -27,9 +33,23 @@ interface SparklineProps {
   showEnd?: boolean;
 }
 
-export function Sparkline({data = [], width = 96, height = 28, showEnd = true}: SparklineProps) {
+export function Sparkline({
+  data = [],
+  width = 96,
+  height = 28,
+  showEnd = true,
+}: SparklineProps) {
   if (!data.length) {
-    return <View style={{width, height, backgroundColor: colors.surfaceInput, borderRadius: 2}} />;
+    return (
+      <View
+        style={{
+          width,
+          height,
+          backgroundColor: colors.surfaceInput,
+          borderRadius: 2,
+        }}
+      />
+    );
   }
 
   const min = Math.min(...data);
@@ -39,13 +59,16 @@ export function Sparkline({data = [], width = 96, height = 28, showEnd = true}: 
   const innerH = height - pad * 2;
 
   const points = data.map((y, i) => ({
-    x: pad + (data.length === 1 ? innerW / 2 : (i / (data.length - 1)) * innerW),
+    x:
+      pad + (data.length === 1 ? innerW / 2 : (i / (data.length - 1)) * innerW),
     y: pad + (1 - (y - min) / (max - min || 1)) * innerH,
   }));
 
   const linePath = smoothPath(points);
   const last = points[points.length - 1];
-  const areaPath = `${linePath} L ${last.x} ${height - pad} L ${points[0].x} ${height - pad} Z`;
+  const areaPath = `${linePath} L ${last.x} ${height - pad} L ${points[0].x} ${
+    height - pad
+  } Z`;
 
   return (
     <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>

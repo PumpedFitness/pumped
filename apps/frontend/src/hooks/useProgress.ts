@@ -1,7 +1,7 @@
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 import * as SetRepo from '../data/repositories/WorkoutSetRepository';
 import * as SessionRepo from '../data/repositories/WorkoutSessionRepository';
-import type {Exercise} from '../types/domain';
+import type { Exercise } from '../types/domain';
 
 type PersonalRecord = {
   exercise: Exercise;
@@ -43,14 +43,14 @@ export function useProgress(exercises: Exercise[]) {
 
     const data: DayActivity[] = [];
     for (const [date, count] of dayMap) {
-      data.push({date, count});
+      data.push({ date, count });
     }
     return data.sort((a, b) => a.date.localeCompare(b.date));
   }, []);
 
   const totalWorkouts = useMemo(() => {
-    return SessionRepo.getAllSessions().filter((s) => s.endedAt !== null).length;
+    return SessionRepo.getAllSessions().filter(s => s.endedAt !== null).length;
   }, []);
 
-  return {personalRecords, heatmapData, totalWorkouts};
+  return { personalRecords, heatmapData, totalWorkouts };
 }

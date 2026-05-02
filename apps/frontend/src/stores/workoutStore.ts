@@ -1,4 +1,4 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 import { randomUUID } from 'expo-crypto';
 import type {
   WorkoutSession,
@@ -17,7 +17,11 @@ type WorkoutState = {
   activeSession: WorkoutSession | null;
   activeExercises: ActiveExercise[];
 
-  startWorkout: (userId: string, name: string, workoutTemplateId?: string) => void;
+  startWorkout: (
+    userId: string,
+    name: string,
+    workoutTemplateId?: string,
+  ) => void;
   addExercise: (exercise: Exercise) => void;
   logSet: (exerciseId: string, weight: number | null, reps: number) => void;
   deleteSet: (setId: string) => void;
@@ -41,28 +45,28 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
       notes: null,
     };
     SessionRepo.createSession(session);
-    set({activeSession: session, activeExercises: []});
+    set({ activeSession: session, activeExercises: [] });
   },
 
-  addExercise: (exercise) => {
-    const {activeExercises} = get();
+  addExercise: exercise => {
+    const { activeExercises } = get();
     const alreadyAdded = activeExercises.some(
-      (e) => e.exercise.id === exercise.id,
+      e => e.exercise.id === exercise.id,
     );
     if (alreadyAdded) {
       return;
     }
-    set({activeExercises: [...activeExercises, {exercise, sets: []}]});
+    set({ activeExercises: [...activeExercises, { exercise, sets: [] }] });
   },
 
   logSet: (exerciseId, weight, reps) => {
-    const {activeSession, activeExercises} = get();
+    const { activeSession, activeExercises } = get();
     if (!activeSession) {
       return;
     }
 
     const exerciseEntry = activeExercises.find(
-      (e) => e.exercise.id === exerciseId,
+      e => e.exercise.id === exerciseId,
     );
     if (!exerciseEntry) {
       return;
@@ -84,49 +88,47 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     SetRepo.logSet(newSet);
 
     set({
-      activeExercises: activeExercises.map((e) =>
-        e.exercise.id === exerciseId
-          ? {...e, sets: [...e.sets, newSet]}
-          : e,
+      activeExercises: activeExercises.map(e =>
+        e.exercise.id === exerciseId ? { ...e, sets: [...e.sets, newSet] } : e,
       ),
     });
   },
 
-  deleteSet: (setId) => {
+  deleteSet: setId => {
     SetRepo.deleteSet(setId);
-    const {activeExercises} = get();
+    const { activeExercises } = get();
     set({
-      activeExercises: activeExercises.map((e) => ({
+      activeExercises: activeExercises.map(e => ({
         ...e,
-        sets: e.sets.filter((s) => s.id !== setId),
+        sets: e.sets.filter(s => s.id !== setId),
       })),
     });
   },
 
-  finishWorkout: (notes) => {
-    const {activeSession} = get();
+  finishWorkout: notes => {
+    const { activeSession } = get();
     if (!activeSession) {
       return;
     }
     const endedAt = Date.now();
     SessionRepo.finishSession(activeSession.id, endedAt, notes ?? null);
     set({
-      activeSession: {...activeSession, endedAt, notes: notes ?? null},
+      activeSession: { ...activeSession, endedAt, notes: notes ?? null },
     });
   },
 
   discardWorkout: () => {
-    const {activeSession} = get();
+    const { activeSession } = get();
     if (activeSession) {
       SessionRepo.deleteSession(activeSession.id);
     }
-    set({activeSession: null, activeExercises: []});
+    set({ activeSession: null, activeExercises: [] });
   },
 
-  reloadActiveSession: (workoutSessionId) => {
+  reloadActiveSession: workoutSessionId => {
     const session = SessionRepo.getSessionById(workoutSessionId);
     if (!session) {
-      set({activeSession: null, activeExercises: []});
+      set({ activeSession: null, activeExercises: [] });
       return;
     }
     const sets = SetRepo.getSetsForSession(workoutSessionId);
@@ -140,6 +142,6 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
 
     // Note: activeExercises requires Exercise objects which the caller must provide
     // This reload only restores the session reference
-    set({activeSession: session});
+    set({ activeSession: session });
   },
 }));

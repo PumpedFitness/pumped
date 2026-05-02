@@ -1,4 +1,4 @@
-import {sqliteTable, text, integer} from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
 // Backend-derived entity tables (auto-generated via drizzle-kit pull)
 export {
@@ -13,7 +13,7 @@ export {
 // Frontend-only tables
 
 export const syncQueue = sqliteTable('sync_queue', {
-  id: integer('id').primaryKey({autoIncrement: true}),
+  id: integer('id').primaryKey({ autoIncrement: true }),
   entity: text('entity').notNull(),
   entityId: text('entity_id').notNull(),
   action: text('action').notNull(),

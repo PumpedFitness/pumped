@@ -1,13 +1,13 @@
-import {View, Text} from 'react-native';
-import Svg, {Rect, Text as SvgText} from 'react-native-svg';
-import {colors} from '../theme/tokens';
+import { View, Text } from 'react-native';
+import Svg, { Rect, Text as SvgText } from 'react-native-svg';
+import { colors } from '../theme/tokens';
 
 const heatColors = [
-  colors.surfaceInput,          // 0 - no activity
-  'rgba(212, 165, 116, 0.18)',  // 1
-  'rgba(212, 165, 116, 0.40)',  // 2
-  'rgba(212, 165, 116, 0.70)',  // 3
-  colors.accent,                // 4 - max
+  colors.surfaceInput, // 0 - no activity
+  'rgba(212, 165, 116, 0.18)', // 1
+  'rgba(212, 165, 116, 0.40)', // 2
+  'rgba(212, 165, 116, 0.70)', // 3
+  colors.accent, // 4 - max
 ];
 
 interface YearHeatmapProps {
@@ -34,9 +34,9 @@ export function YearHeatmap({
   const w = weeks * (cellSize + gap) - gap;
   const h = rows * (cellSize + gap) - gap + 18;
 
-  const monthLabels: {c: number; label: string}[] = [];
+  const monthLabels: { c: number; label: string }[] = [];
   let lastMonth = -1;
-  const cells: {c: number; r: number; iso: string; v: number}[] = [];
+  const cells: { c: number; r: number; iso: string; v: number }[] = [];
 
   for (let c = 0; c < weeks; c++) {
     for (let r = 0; r < rows; r++) {
@@ -45,12 +45,12 @@ export function YearHeatmap({
       if (d > today) continue;
       const iso = d.toISOString().slice(0, 10);
       const v = data.get(iso) || 0;
-      cells.push({c, r, iso, v});
+      cells.push({ c, r, iso, v });
       if (r === 0 && d.getMonth() !== lastMonth) {
         lastMonth = d.getMonth();
         monthLabels.push({
           c,
-          label: d.toLocaleString('en-US', {month: 'short'}).toUpperCase(),
+          label: d.toLocaleString('en-US', { month: 'short' }).toUpperCase(),
         });
       }
     }
@@ -64,7 +64,8 @@ export function YearHeatmap({
         borderColor: colors.border,
         borderRadius: 4,
         padding: 16,
-      }}>
+      }}
+    >
       <Svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
         {monthLabels.map((m, i) => (
           <SvgText
@@ -74,11 +75,12 @@ export function YearHeatmap({
             fontFamily="monospace"
             fontSize={9}
             letterSpacing={0.54}
-            fill={colors.textMuted}>
+            fill={colors.textMuted}
+          >
             {m.label}
           </SvgText>
         ))}
-        {cells.map(({c, r, iso, v}) => (
+        {cells.map(({ c, r, iso, v }) => (
           <Rect
             key={iso}
             x={c * (cellSize + gap)}
@@ -93,7 +95,14 @@ export function YearHeatmap({
         ))}
       </Svg>
       {/* Legend */}
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 12}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 4,
+          marginTop: 12,
+        }}
+      >
         <Text
           style={{
             fontFamily: 'monospace',
@@ -102,7 +111,8 @@ export function YearHeatmap({
             letterSpacing: 0.66,
             textTransform: 'uppercase',
             color: colors.textMuted,
-          }}>
+          }}
+        >
           Less
         </Text>
         {heatColors.map((c, i) => (
@@ -126,7 +136,8 @@ export function YearHeatmap({
             letterSpacing: 0.66,
             textTransform: 'uppercase',
             color: colors.textMuted,
-          }}>
+          }}
+        >
           More
         </Text>
       </View>

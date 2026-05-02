@@ -9,16 +9,16 @@ import { fetchClient } from './fetchClient';
 /**
  * Recurring schedule type
  */
-export type WorkoutTemplateScheduleRequestType = typeof WorkoutTemplateScheduleRequestType[keyof typeof WorkoutTemplateScheduleRequestType];
-
+export type WorkoutTemplateScheduleRequestType =
+  (typeof WorkoutTemplateScheduleRequestType)[keyof typeof WorkoutTemplateScheduleRequestType];
 
 export const WorkoutTemplateScheduleRequestType = {
   DAYS: 'DAYS',
   WEEKS: 'WEEKS',
 } as const;
 
-export type WorkoutTemplateScheduleRequestWeekdaysItem = typeof WorkoutTemplateScheduleRequestWeekdaysItem[keyof typeof WorkoutTemplateScheduleRequestWeekdaysItem];
-
+export type WorkoutTemplateScheduleRequestWeekdaysItem =
+  (typeof WorkoutTemplateScheduleRequestWeekdaysItem)[keyof typeof WorkoutTemplateScheduleRequestWeekdaysItem];
 
 export const WorkoutTemplateScheduleRequestWeekdaysItem = {
   MONDAY: 'MONDAY',
@@ -37,9 +37,9 @@ export interface WorkoutTemplateScheduleRequest {
   /** Recurring schedule type */
   type: WorkoutTemplateScheduleRequestType;
   /**
-     * Repeat interval for the selected schedule type
-     * @minimum 1
-     */
+   * Repeat interval for the selected schedule type
+   * @minimum 1
+   */
   interval: number;
   /** Weekdays used when type is WEEKS */
   weekdays?: WorkoutTemplateScheduleRequestWeekdaysItem[];
@@ -50,16 +50,16 @@ export interface WorkoutTemplateScheduleRequest {
  */
 export interface UpdateWorkoutTemplateRequest {
   /**
-     * New name of the workout template
-     * @minLength 1
-     * @maxLength 100
-     */
+   * New name of the workout template
+   * @minLength 1
+   * @maxLength 100
+   */
   name: string;
   /**
-     * Updated description
-     * @minLength 0
-     * @maxLength 500
-     */
+   * Updated description
+   * @minLength 0
+   * @maxLength 500
+   */
   description?: string;
   /** Optional recurrence schedule for the template. Use null to remove the schedule. */
   schedule?: WorkoutTemplateScheduleRequest;
@@ -82,16 +82,16 @@ export interface WorkoutTemplateExerciseDto {
 /**
  * Recurring schedule type
  */
-export type WorkoutTemplateScheduleResponseType = typeof WorkoutTemplateScheduleResponseType[keyof typeof WorkoutTemplateScheduleResponseType];
-
+export type WorkoutTemplateScheduleResponseType =
+  (typeof WorkoutTemplateScheduleResponseType)[keyof typeof WorkoutTemplateScheduleResponseType];
 
 export const WorkoutTemplateScheduleResponseType = {
   DAYS: 'DAYS',
   WEEKS: 'WEEKS',
 } as const;
 
-export type WorkoutTemplateScheduleResponseWeekdaysItem = typeof WorkoutTemplateScheduleResponseWeekdaysItem[keyof typeof WorkoutTemplateScheduleResponseWeekdaysItem];
-
+export type WorkoutTemplateScheduleResponseWeekdaysItem =
+  (typeof WorkoutTemplateScheduleResponseWeekdaysItem)[keyof typeof WorkoutTemplateScheduleResponseWeekdaysItem];
 
 export const WorkoutTemplateScheduleResponseWeekdaysItem = {
   MONDAY: 'MONDAY',
@@ -140,23 +140,23 @@ export interface WorkoutTemplateResponse {
  */
 export interface UpdateMeRequest {
   /**
-     * New username
-     * @minLength 3
-     * @maxLength 100
-     * @pattern ^[a-zA-Z0-9]+$
-     */
+   * New username
+   * @minLength 3
+   * @maxLength 100
+   * @pattern ^[a-zA-Z0-9]+$
+   */
   username: string;
   /**
-     * User bio or description
-     * @minLength 0
-     * @maxLength 500
-     */
+   * User bio or description
+   * @minLength 0
+   * @maxLength 500
+   */
   description?: string;
   /**
-     * URL of the user's profile picture
-     * @minLength 0
-     * @maxLength 2048
-     */
+   * URL of the user's profile picture
+   * @minLength 0
+   * @maxLength 2048
+   */
   profilePictureUrl?: string;
 }
 
@@ -179,16 +179,16 @@ export interface GetMeResponse {
  */
 export interface CreateWorkoutTemplateRequest {
   /**
-     * Name of the workout template
-     * @minLength 1
-     * @maxLength 100
-     */
+   * Name of the workout template
+   * @minLength 1
+   * @maxLength 100
+   */
   name: string;
   /**
-     * Optional description
-     * @minLength 0
-     * @maxLength 500
-     */
+   * Optional description
+   * @minLength 0
+   * @maxLength 500
+   */
   description?: string;
   /** Optional recurrence schedule for the template */
   schedule?: WorkoutTemplateScheduleRequest;
@@ -199,21 +199,21 @@ export interface CreateWorkoutTemplateRequest {
  */
 export interface StartWorkoutSessionRequest {
   /**
-     * Name of the session
-     * @minLength 1
-     * @maxLength 100
-     */
+   * Name of the session
+   * @minLength 1
+   * @maxLength 100
+   */
   name: string;
   /**
-     * Optional UUID of a workout template to base this session on
-     * @pattern ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-     */
+   * Optional UUID of a workout template to base this session on
+   * @pattern ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+   */
   workoutTemplateId?: string;
   /**
-     * Optional notes
-     * @minLength 0
-     * @maxLength 500
-     */
+   * Optional notes
+   * @minLength 0
+   * @maxLength 500
+   */
   notes?: string;
 }
 
@@ -240,44 +240,44 @@ export interface WorkoutSessionResponse {
  */
 export interface LogSetRequest {
   /**
-     * UUID of the exercise performed
-     * @minLength 1
-     * @pattern ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-     */
+   * UUID of the exercise performed
+   * @minLength 1
+   * @pattern ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+   */
   exerciseId: string;
   /**
-     * Index of this set within the exercise (0-based)
-     * @minimum 0
-     */
+   * Index of this set within the exercise (0-based)
+   * @minimum 0
+   */
   setIndex: number;
   /**
-     * Number of reps completed
-     * @minimum 1
-     */
+   * Number of reps completed
+   * @minimum 1
+   */
   reps: number;
   /** Weight used in kg */
   weight?: number;
   /**
-     * Rate of perceived exertion on a 1-10 scale
-     * @minimum 1
-     * @maximum 10
-     */
+   * Rate of perceived exertion on a 1-10 scale
+   * @minimum 1
+   * @maximum 10
+   */
   rpe?: number;
   /**
-     * Rest time in seconds after this set
-     * @minimum 0
-     */
+   * Rest time in seconds after this set
+   * @minimum 0
+   */
   restSeconds?: number;
   /**
-     * Duration of the set in seconds (for timed exercises)
-     * @minimum 1
-     */
+   * Duration of the set in seconds (for timed exercises)
+   * @minimum 1
+   */
   durationSeconds?: number;
   /**
-     * Optional notes
-     * @minLength 0
-     * @maxLength 500
-     */
+   * Optional notes
+   * @minLength 0
+   * @maxLength 500
+   */
   notes?: string;
 }
 
@@ -312,18 +312,18 @@ export interface WorkoutSessionSetResponse {
  */
 export interface UserRegisterRequest {
   /**
-     * Unique username (3–100 alphanumeric characters)
-     * @minLength 3
-     * @maxLength 100
-     * @pattern ^[a-zA-Z0-9]+$
-     */
+   * Unique username (3–100 alphanumeric characters)
+   * @minLength 3
+   * @maxLength 100
+   * @pattern ^[a-zA-Z0-9]+$
+   */
   username: string;
   /**
-     * Password (min 8 chars, must include uppercase, lowercase, digit, and special character)
-     * @minLength 8
-     * @maxLength 100
-     * @pattern ^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*\-]).{8,}$
-     */
+   * Password (min 8 chars, must include uppercase, lowercase, digit, and special character)
+   * @minLength 8
+   * @maxLength 100
+   * @pattern ^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*\-]).{8,}$
+   */
   password: string;
 }
 
@@ -360,16 +360,16 @@ export interface UserLoginResponse {
  */
 export interface UserLoginRequest {
   /**
-     * The user's username
-     * @minLength 3
-     * @maxLength 100
-     */
+   * The user's username
+   * @minLength 3
+   * @maxLength 100
+   */
   username: string;
   /**
-     * The user's password
-     * @minLength 8
-     * @maxLength 100
-     */
+   * The user's password
+   * @minLength 8
+   * @maxLength 100
+   */
   password: string;
 }
 
@@ -378,15 +378,15 @@ export interface UserLoginRequest {
  */
 export interface FinishWorkoutSessionRequest {
   /**
-     * Optional closing notes
-     * @minLength 0
-     * @maxLength 500
-     */
+   * Optional closing notes
+   * @minLength 0
+   * @maxLength 500
+   */
   notes?: string;
 }
 
-export type ExerciseDtoMuscleGroupItem = typeof ExerciseDtoMuscleGroupItem[keyof typeof ExerciseDtoMuscleGroupItem];
-
+export type ExerciseDtoMuscleGroupItem =
+  (typeof ExerciseDtoMuscleGroupItem)[keyof typeof ExerciseDtoMuscleGroupItem];
 
 export const ExerciseDtoMuscleGroupItem = {
   CHEST: 'CHEST',
@@ -397,8 +397,8 @@ export const ExerciseDtoMuscleGroupItem = {
   CORE: 'CORE',
 } as const;
 
-export type ExerciseDtoExerciseCategory = typeof ExerciseDtoExerciseCategory[keyof typeof ExerciseDtoExerciseCategory];
-
+export type ExerciseDtoExerciseCategory =
+  (typeof ExerciseDtoExerciseCategory)[keyof typeof ExerciseDtoExerciseCategory];
 
 export const ExerciseDtoExerciseCategory = {
   STRENGTH: 'STRENGTH',
@@ -408,8 +408,8 @@ export const ExerciseDtoExerciseCategory = {
   OTHER: 'OTHER',
 } as const;
 
-export type ExerciseDtoEquipmentItem = typeof ExerciseDtoEquipmentItem[keyof typeof ExerciseDtoEquipmentItem];
-
+export type ExerciseDtoEquipmentItem =
+  (typeof ExerciseDtoEquipmentItem)[keyof typeof ExerciseDtoEquipmentItem];
 
 export const ExerciseDtoEquipmentItem = {
   DUMBBELL: 'DUMBBELL',
@@ -436,985 +436,904 @@ export interface ExerciseDto {
  * @summary Get template by ID
  */
 export type getTemplateResponse200 = {
-  data: WorkoutTemplateResponse
-  status: 200
-}
+  data: WorkoutTemplateResponse;
+  status: 200;
+};
 
 export type getTemplateResponse401 = {
-  data: WorkoutTemplateResponse
-  status: 401
-}
+  data: WorkoutTemplateResponse;
+  status: 401;
+};
 
 export type getTemplateResponse404 = {
-  data: WorkoutTemplateResponse
-  status: 404
-}
-
-export type getTemplateResponseSuccess = (getTemplateResponse200) & {
-  headers: Headers;
-};
-export type getTemplateResponseError = (getTemplateResponse401 | getTemplateResponse404) & {
-  headers: Headers;
+  data: WorkoutTemplateResponse;
+  status: 404;
 };
 
-export type getTemplateResponse = (getTemplateResponseSuccess | getTemplateResponseError)
+export type getTemplateResponseSuccess = getTemplateResponse200 & {
+  headers: Headers;
+};
+export type getTemplateResponseError = (
+  | getTemplateResponse401
+  | getTemplateResponse404
+) & {
+  headers: Headers;
+};
 
-export const getGetTemplateUrl = (templateId: string,) => {
+export type getTemplateResponse =
+  | getTemplateResponseSuccess
+  | getTemplateResponseError;
 
+export const getGetTemplateUrl = (templateId: string) => {
+  return `/workout-template/${templateId}`;
+};
 
-
-
-  return `/workout-template/${templateId}`
-}
-
-export const getTemplate = async (templateId: string, options?: RequestInit): Promise<getTemplateResponse> => {
-
-  return fetchClient<getTemplateResponse>(getGetTemplateUrl(templateId),
-  {
+export const getTemplate = async (
+  templateId: string,
+  options?: RequestInit,
+): Promise<getTemplateResponse> => {
+  return fetchClient<getTemplateResponse>(getGetTemplateUrl(templateId), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 /**
  * Updates the name and description of an existing workout template.
  * @summary Update template
  */
 export type updateTemplateResponse200 = {
-  data: WorkoutTemplateResponse
-  status: 200
-}
+  data: WorkoutTemplateResponse;
+  status: 200;
+};
 
 export type updateTemplateResponse400 = {
-  data: WorkoutTemplateResponse
-  status: 400
-}
+  data: WorkoutTemplateResponse;
+  status: 400;
+};
 
 export type updateTemplateResponse401 = {
-  data: WorkoutTemplateResponse
-  status: 401
-}
+  data: WorkoutTemplateResponse;
+  status: 401;
+};
 
 export type updateTemplateResponse404 = {
-  data: WorkoutTemplateResponse
-  status: 404
-}
-
-export type updateTemplateResponseSuccess = (updateTemplateResponse200) & {
-  headers: Headers;
-};
-export type updateTemplateResponseError = (updateTemplateResponse400 | updateTemplateResponse401 | updateTemplateResponse404) & {
-  headers: Headers;
+  data: WorkoutTemplateResponse;
+  status: 404;
 };
 
-export type updateTemplateResponse = (updateTemplateResponseSuccess | updateTemplateResponseError)
+export type updateTemplateResponseSuccess = updateTemplateResponse200 & {
+  headers: Headers;
+};
+export type updateTemplateResponseError = (
+  | updateTemplateResponse400
+  | updateTemplateResponse401
+  | updateTemplateResponse404
+) & {
+  headers: Headers;
+};
 
-export const getUpdateTemplateUrl = (templateId: string,) => {
+export type updateTemplateResponse =
+  | updateTemplateResponseSuccess
+  | updateTemplateResponseError;
 
+export const getUpdateTemplateUrl = (templateId: string) => {
+  return `/workout-template/${templateId}`;
+};
 
-
-
-  return `/workout-template/${templateId}`
-}
-
-export const updateTemplate = async (templateId: string,
-    updateWorkoutTemplateRequest: UpdateWorkoutTemplateRequest, options?: RequestInit): Promise<updateTemplateResponse> => {
-
-  return fetchClient<updateTemplateResponse>(getUpdateTemplateUrl(templateId),
-  {
+export const updateTemplate = async (
+  templateId: string,
+  updateWorkoutTemplateRequest: UpdateWorkoutTemplateRequest,
+  options?: RequestInit,
+): Promise<updateTemplateResponse> => {
+  return fetchClient<updateTemplateResponse>(getUpdateTemplateUrl(templateId), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateWorkoutTemplateRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(updateWorkoutTemplateRequest),
+  });
+};
 
 /**
  * Deletes a workout template owned by the authenticated user.
  * @summary Delete template
  */
 export type deleteTemplateResponseDefault = {
-  data: unknown
-  status: number
-}
-
-;
-export type deleteTemplateResponseError = (deleteTemplateResponseDefault) & {
+  data: unknown;
+  status: number;
+};
+export type deleteTemplateResponseError = deleteTemplateResponseDefault & {
   headers: Headers;
 };
 
-export type deleteTemplateResponse = (deleteTemplateResponseError)
+export type deleteTemplateResponse = deleteTemplateResponseError;
 
-export const getDeleteTemplateUrl = (templateId: string,) => {
+export const getDeleteTemplateUrl = (templateId: string) => {
+  return `/workout-template/${templateId}`;
+};
 
-
-
-
-  return `/workout-template/${templateId}`
-}
-
-export const deleteTemplate = async (templateId: string, options?: RequestInit): Promise<deleteTemplateResponse> => {
-
-  return fetchClient<deleteTemplateResponse>(getDeleteTemplateUrl(templateId),
-  {
+export const deleteTemplate = async (
+  templateId: string,
+  options?: RequestInit,
+): Promise<deleteTemplateResponse> => {
+  return fetchClient<deleteTemplateResponse>(getDeleteTemplateUrl(templateId), {
     ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
+    method: 'DELETE',
+  });
+};
 
 /**
  * Returns the profile of the currently authenticated user.
  * @summary Get current user profile
  */
 export type getMeResponse200 = {
-  data: GetMeResponse
-  status: 200
-}
+  data: GetMeResponse;
+  status: 200;
+};
 
 export type getMeResponse401 = {
-  data: GetMeResponse
-  status: 401
-}
-
-export type getMeResponseSuccess = (getMeResponse200) & {
-  headers: Headers;
-};
-export type getMeResponseError = (getMeResponse401) & {
-  headers: Headers;
+  data: GetMeResponse;
+  status: 401;
 };
 
-export type getMeResponse = (getMeResponseSuccess | getMeResponseError)
+export type getMeResponseSuccess = getMeResponse200 & {
+  headers: Headers;
+};
+export type getMeResponseError = getMeResponse401 & {
+  headers: Headers;
+};
+
+export type getMeResponse = getMeResponseSuccess | getMeResponseError;
 
 export const getGetMeUrl = () => {
+  return `/user/me`;
+};
 
-
-
-
-  return `/user/me`
-}
-
-export const getMe = async ( options?: RequestInit): Promise<getMeResponse> => {
-
-  return fetchClient<getMeResponse>(getGetMeUrl(),
-  {
+export const getMe = async (options?: RequestInit): Promise<getMeResponse> => {
+  return fetchClient<getMeResponse>(getGetMeUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 /**
  * Updates the username, description, and/or profile picture of the currently authenticated user.
  * @summary Update current user profile
  */
 export type updateMeResponse200 = {
-  data: GetMeResponse
-  status: 200
-}
+  data: GetMeResponse;
+  status: 200;
+};
 
 export type updateMeResponse400 = {
-  data: GetMeResponse
-  status: 400
-}
+  data: GetMeResponse;
+  status: 400;
+};
 
 export type updateMeResponse401 = {
-  data: GetMeResponse
-  status: 401
-}
-
-export type updateMeResponseSuccess = (updateMeResponse200) & {
-  headers: Headers;
-};
-export type updateMeResponseError = (updateMeResponse400 | updateMeResponse401) & {
-  headers: Headers;
+  data: GetMeResponse;
+  status: 401;
 };
 
-export type updateMeResponse = (updateMeResponseSuccess | updateMeResponseError)
+export type updateMeResponseSuccess = updateMeResponse200 & {
+  headers: Headers;
+};
+export type updateMeResponseError = (
+  | updateMeResponse400
+  | updateMeResponse401
+) & {
+  headers: Headers;
+};
+
+export type updateMeResponse = updateMeResponseSuccess | updateMeResponseError;
 
 export const getUpdateMeUrl = () => {
+  return `/user/me`;
+};
 
-
-
-
-  return `/user/me`
-}
-
-export const updateMe = async (updateMeRequest: UpdateMeRequest, options?: RequestInit): Promise<updateMeResponse> => {
-
-  return fetchClient<updateMeResponse>(getUpdateMeUrl(),
-  {
+export const updateMe = async (
+  updateMeRequest: UpdateMeRequest,
+  options?: RequestInit,
+): Promise<updateMeResponse> => {
+  return fetchClient<updateMeResponse>(getUpdateMeUrl(), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateMeRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(updateMeRequest),
+  });
+};
 
 /**
  * Returns all workout templates owned by the authenticated user.
  * @summary Get all templates
  */
 export type getMyTemplatesResponse200 = {
-  data: WorkoutTemplateResponse[]
-  status: 200
-}
+  data: WorkoutTemplateResponse[];
+  status: 200;
+};
 
 export type getMyTemplatesResponse401 = {
-  data: WorkoutTemplateResponse[]
-  status: 401
-}
-
-export type getMyTemplatesResponseSuccess = (getMyTemplatesResponse200) & {
-  headers: Headers;
-};
-export type getMyTemplatesResponseError = (getMyTemplatesResponse401) & {
-  headers: Headers;
+  data: WorkoutTemplateResponse[];
+  status: 401;
 };
 
-export type getMyTemplatesResponse = (getMyTemplatesResponseSuccess | getMyTemplatesResponseError)
+export type getMyTemplatesResponseSuccess = getMyTemplatesResponse200 & {
+  headers: Headers;
+};
+export type getMyTemplatesResponseError = getMyTemplatesResponse401 & {
+  headers: Headers;
+};
+
+export type getMyTemplatesResponse =
+  | getMyTemplatesResponseSuccess
+  | getMyTemplatesResponseError;
 
 export const getGetMyTemplatesUrl = () => {
+  return `/workout-template`;
+};
 
-
-
-
-  return `/workout-template`
-}
-
-export const getMyTemplates = async ( options?: RequestInit): Promise<getMyTemplatesResponse> => {
-
-  return fetchClient<getMyTemplatesResponse>(getGetMyTemplatesUrl(),
-  {
+export const getMyTemplates = async (
+  options?: RequestInit,
+): Promise<getMyTemplatesResponse> => {
+  return fetchClient<getMyTemplatesResponse>(getGetMyTemplatesUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 /**
  * Creates a new workout template for the authenticated user.
  * @summary Create template
  */
 export type createTemplateResponse200 = {
-  data: WorkoutTemplateResponse
-  status: 200
-}
+  data: WorkoutTemplateResponse;
+  status: 200;
+};
 
 export type createTemplateResponse400 = {
-  data: WorkoutTemplateResponse
-  status: 400
-}
+  data: WorkoutTemplateResponse;
+  status: 400;
+};
 
 export type createTemplateResponse401 = {
-  data: WorkoutTemplateResponse
-  status: 401
-}
-
-export type createTemplateResponseSuccess = (createTemplateResponse200) & {
-  headers: Headers;
-};
-export type createTemplateResponseError = (createTemplateResponse400 | createTemplateResponse401) & {
-  headers: Headers;
+  data: WorkoutTemplateResponse;
+  status: 401;
 };
 
-export type createTemplateResponse = (createTemplateResponseSuccess | createTemplateResponseError)
+export type createTemplateResponseSuccess = createTemplateResponse200 & {
+  headers: Headers;
+};
+export type createTemplateResponseError = (
+  | createTemplateResponse400
+  | createTemplateResponse401
+) & {
+  headers: Headers;
+};
+
+export type createTemplateResponse =
+  | createTemplateResponseSuccess
+  | createTemplateResponseError;
 
 export const getCreateTemplateUrl = () => {
+  return `/workout-template`;
+};
 
-
-
-
-  return `/workout-template`
-}
-
-export const createTemplate = async (createWorkoutTemplateRequest: CreateWorkoutTemplateRequest, options?: RequestInit): Promise<createTemplateResponse> => {
-
-  return fetchClient<createTemplateResponse>(getCreateTemplateUrl(),
-  {
+export const createTemplate = async (
+  createWorkoutTemplateRequest: CreateWorkoutTemplateRequest,
+  options?: RequestInit,
+): Promise<createTemplateResponse> => {
+  return fetchClient<createTemplateResponse>(getCreateTemplateUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createWorkoutTemplateRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(createWorkoutTemplateRequest),
+  });
+};
 
 /**
  * Returns all workout sessions for the authenticated user, newest first.
  * @summary Get all sessions
  */
 export type getMySessionsResponse200 = {
-  data: WorkoutSessionResponse[]
-  status: 200
-}
+  data: WorkoutSessionResponse[];
+  status: 200;
+};
 
 export type getMySessionsResponse401 = {
-  data: WorkoutSessionResponse[]
-  status: 401
-}
-
-export type getMySessionsResponseSuccess = (getMySessionsResponse200) & {
-  headers: Headers;
-};
-export type getMySessionsResponseError = (getMySessionsResponse401) & {
-  headers: Headers;
+  data: WorkoutSessionResponse[];
+  status: 401;
 };
 
-export type getMySessionsResponse = (getMySessionsResponseSuccess | getMySessionsResponseError)
+export type getMySessionsResponseSuccess = getMySessionsResponse200 & {
+  headers: Headers;
+};
+export type getMySessionsResponseError = getMySessionsResponse401 & {
+  headers: Headers;
+};
+
+export type getMySessionsResponse =
+  | getMySessionsResponseSuccess
+  | getMySessionsResponseError;
 
 export const getGetMySessionsUrl = () => {
+  return `/workout-session`;
+};
 
-
-
-
-  return `/workout-session`
-}
-
-export const getMySessions = async ( options?: RequestInit): Promise<getMySessionsResponse> => {
-
-  return fetchClient<getMySessionsResponse>(getGetMySessionsUrl(),
-  {
+export const getMySessions = async (
+  options?: RequestInit,
+): Promise<getMySessionsResponse> => {
+  return fetchClient<getMySessionsResponse>(getGetMySessionsUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 /**
  * Starts a new workout session for the authenticated user.
  * @summary Start session
  */
 export type startSessionResponse200 = {
-  data: WorkoutSessionResponse
-  status: 200
-}
+  data: WorkoutSessionResponse;
+  status: 200;
+};
 
 export type startSessionResponse400 = {
-  data: WorkoutSessionResponse
-  status: 400
-}
+  data: WorkoutSessionResponse;
+  status: 400;
+};
 
 export type startSessionResponse401 = {
-  data: WorkoutSessionResponse
-  status: 401
-}
-
-export type startSessionResponseSuccess = (startSessionResponse200) & {
-  headers: Headers;
-};
-export type startSessionResponseError = (startSessionResponse400 | startSessionResponse401) & {
-  headers: Headers;
+  data: WorkoutSessionResponse;
+  status: 401;
 };
 
-export type startSessionResponse = (startSessionResponseSuccess | startSessionResponseError)
+export type startSessionResponseSuccess = startSessionResponse200 & {
+  headers: Headers;
+};
+export type startSessionResponseError = (
+  | startSessionResponse400
+  | startSessionResponse401
+) & {
+  headers: Headers;
+};
+
+export type startSessionResponse =
+  | startSessionResponseSuccess
+  | startSessionResponseError;
 
 export const getStartSessionUrl = () => {
+  return `/workout-session`;
+};
 
-
-
-
-  return `/workout-session`
-}
-
-export const startSession = async (startWorkoutSessionRequest: StartWorkoutSessionRequest, options?: RequestInit): Promise<startSessionResponse> => {
-
-  return fetchClient<startSessionResponse>(getStartSessionUrl(),
-  {
+export const startSession = async (
+  startWorkoutSessionRequest: StartWorkoutSessionRequest,
+  options?: RequestInit,
+): Promise<startSessionResponse> => {
+  return fetchClient<startSessionResponse>(getStartSessionUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      startWorkoutSessionRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(startWorkoutSessionRequest),
+  });
+};
 
 /**
  * Returns all sets logged in a specific workout session, ordered by set index.
  * @summary Get all sets
  */
 export type getSetsForSessionResponse200 = {
-  data: WorkoutSessionSetResponse[]
-  status: 200
-}
+  data: WorkoutSessionSetResponse[];
+  status: 200;
+};
 
 export type getSetsForSessionResponse401 = {
-  data: WorkoutSessionSetResponse[]
-  status: 401
-}
+  data: WorkoutSessionSetResponse[];
+  status: 401;
+};
 
 export type getSetsForSessionResponse403 = {
-  data: WorkoutSessionSetResponse[]
-  status: 403
-}
+  data: WorkoutSessionSetResponse[];
+  status: 403;
+};
 
 export type getSetsForSessionResponse404 = {
-  data: WorkoutSessionSetResponse[]
-  status: 404
-}
-
-export type getSetsForSessionResponseSuccess = (getSetsForSessionResponse200) & {
-  headers: Headers;
-};
-export type getSetsForSessionResponseError = (getSetsForSessionResponse401 | getSetsForSessionResponse403 | getSetsForSessionResponse404) & {
-  headers: Headers;
+  data: WorkoutSessionSetResponse[];
+  status: 404;
 };
 
-export type getSetsForSessionResponse = (getSetsForSessionResponseSuccess | getSetsForSessionResponseError)
+export type getSetsForSessionResponseSuccess = getSetsForSessionResponse200 & {
+  headers: Headers;
+};
+export type getSetsForSessionResponseError = (
+  | getSetsForSessionResponse401
+  | getSetsForSessionResponse403
+  | getSetsForSessionResponse404
+) & {
+  headers: Headers;
+};
 
-export const getGetSetsForSessionUrl = (sessionId: string,) => {
+export type getSetsForSessionResponse =
+  | getSetsForSessionResponseSuccess
+  | getSetsForSessionResponseError;
 
+export const getGetSetsForSessionUrl = (sessionId: string) => {
+  return `/workout-session/${sessionId}/sets`;
+};
 
-
-
-  return `/workout-session/${sessionId}/sets`
-}
-
-export const getSetsForSession = async (sessionId: string, options?: RequestInit): Promise<getSetsForSessionResponse> => {
-
-  return fetchClient<getSetsForSessionResponse>(getGetSetsForSessionUrl(sessionId),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+export const getSetsForSession = async (
+  sessionId: string,
+  options?: RequestInit,
+): Promise<getSetsForSessionResponse> => {
+  return fetchClient<getSetsForSessionResponse>(
+    getGetSetsForSessionUrl(sessionId),
+    {
+      ...options,
+      method: 'GET',
+    },
+  );
+};
 
 /**
  * Logs a new set for an exercise within a workout session.
  * @summary Log a set
  */
 export type logSetResponse200 = {
-  data: WorkoutSessionSetResponse
-  status: 200
-}
+  data: WorkoutSessionSetResponse;
+  status: 200;
+};
 
 export type logSetResponse400 = {
-  data: WorkoutSessionSetResponse
-  status: 400
-}
+  data: WorkoutSessionSetResponse;
+  status: 400;
+};
 
 export type logSetResponse401 = {
-  data: WorkoutSessionSetResponse
-  status: 401
-}
+  data: WorkoutSessionSetResponse;
+  status: 401;
+};
 
 export type logSetResponse403 = {
-  data: WorkoutSessionSetResponse
-  status: 403
-}
+  data: WorkoutSessionSetResponse;
+  status: 403;
+};
 
 export type logSetResponse404 = {
-  data: WorkoutSessionSetResponse
-  status: 404
-}
-
-export type logSetResponseSuccess = (logSetResponse200) & {
-  headers: Headers;
-};
-export type logSetResponseError = (logSetResponse400 | logSetResponse401 | logSetResponse403 | logSetResponse404) & {
-  headers: Headers;
+  data: WorkoutSessionSetResponse;
+  status: 404;
 };
 
-export type logSetResponse = (logSetResponseSuccess | logSetResponseError)
+export type logSetResponseSuccess = logSetResponse200 & {
+  headers: Headers;
+};
+export type logSetResponseError = (
+  | logSetResponse400
+  | logSetResponse401
+  | logSetResponse403
+  | logSetResponse404
+) & {
+  headers: Headers;
+};
 
-export const getLogSetUrl = (sessionId: string,) => {
+export type logSetResponse = logSetResponseSuccess | logSetResponseError;
 
+export const getLogSetUrl = (sessionId: string) => {
+  return `/workout-session/${sessionId}/sets`;
+};
 
-
-
-  return `/workout-session/${sessionId}/sets`
-}
-
-export const logSet = async (sessionId: string,
-    logSetRequest: LogSetRequest, options?: RequestInit): Promise<logSetResponse> => {
-
-  return fetchClient<logSetResponse>(getLogSetUrl(sessionId),
-  {
+export const logSet = async (
+  sessionId: string,
+  logSetRequest: LogSetRequest,
+  options?: RequestInit,
+): Promise<logSetResponse> => {
+  return fetchClient<logSetResponse>(getLogSetUrl(sessionId), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      logSetRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(logSetRequest),
+  });
+};
 
 /**
  * Creates a new user account. Returns the created user's username and timestamps.
  * @summary Register a new user
  */
 export type registerUserResponse200 = {
-  data: UserRegisterResponse
-  status: 200
-}
+  data: UserRegisterResponse;
+  status: 200;
+};
 
 export type registerUserResponse400 = {
-  data: UserRegisterResponse
-  status: 400
-}
+  data: UserRegisterResponse;
+  status: 400;
+};
 
 export type registerUserResponse409 = {
-  data: UserRegisterResponse
-  status: 409
-}
-
-export type registerUserResponseSuccess = (registerUserResponse200) & {
-  headers: Headers;
-};
-export type registerUserResponseError = (registerUserResponse400 | registerUserResponse409) & {
-  headers: Headers;
+  data: UserRegisterResponse;
+  status: 409;
 };
 
-export type registerUserResponse = (registerUserResponseSuccess | registerUserResponseError)
+export type registerUserResponseSuccess = registerUserResponse200 & {
+  headers: Headers;
+};
+export type registerUserResponseError = (
+  | registerUserResponse400
+  | registerUserResponse409
+) & {
+  headers: Headers;
+};
+
+export type registerUserResponse =
+  | registerUserResponseSuccess
+  | registerUserResponseError;
 
 export const getRegisterUserUrl = () => {
+  return `/user/register`;
+};
 
-
-
-
-  return `/user/register`
-}
-
-export const registerUser = async (userRegisterRequest: UserRegisterRequest, options?: RequestInit): Promise<registerUserResponse> => {
-
-  return fetchClient<registerUserResponse>(getRegisterUserUrl(),
-  {
+export const registerUser = async (
+  userRegisterRequest: UserRegisterRequest,
+  options?: RequestInit,
+): Promise<registerUserResponse> => {
+  return fetchClient<registerUserResponse>(getRegisterUserUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      userRegisterRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(userRegisterRequest),
+  });
+};
 
 /**
  * Issues a new JWT token and invalidates the current one.
  * @summary Refresh JWT token
  */
 export type refreshTokenResponse200 = {
-  data: UserLoginResponse
-  status: 200
-}
+  data: UserLoginResponse;
+  status: 200;
+};
 
 export type refreshTokenResponse401 = {
-  data: UserLoginResponse
-  status: 401
-}
-
-export type refreshTokenResponseSuccess = (refreshTokenResponse200) & {
-  headers: Headers;
-};
-export type refreshTokenResponseError = (refreshTokenResponse401) & {
-  headers: Headers;
+  data: UserLoginResponse;
+  status: 401;
 };
 
-export type refreshTokenResponse = (refreshTokenResponseSuccess | refreshTokenResponseError)
+export type refreshTokenResponseSuccess = refreshTokenResponse200 & {
+  headers: Headers;
+};
+export type refreshTokenResponseError = refreshTokenResponse401 & {
+  headers: Headers;
+};
+
+export type refreshTokenResponse =
+  | refreshTokenResponseSuccess
+  | refreshTokenResponseError;
 
 export const getRefreshTokenUrl = () => {
+  return `/user/refresh`;
+};
 
-
-
-
-  return `/user/refresh`
-}
-
-export const refreshToken = async (userSessionRefreshRequest: UserSessionRefreshRequest, options?: RequestInit): Promise<refreshTokenResponse> => {
-
-  return fetchClient<refreshTokenResponse>(getRefreshTokenUrl(),
-  {
+export const refreshToken = async (
+  userSessionRefreshRequest: UserSessionRefreshRequest,
+  options?: RequestInit,
+): Promise<refreshTokenResponse> => {
+  return fetchClient<refreshTokenResponse>(getRefreshTokenUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      userSessionRefreshRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(userSessionRefreshRequest),
+  });
+};
 
 /**
  * Invalidates the current JWT token by adding it to the denylist.
  * @summary Logout
  */
 export type logoutUserResponseDefault = {
-  data: unknown
-  status: number
-}
-
-;
-export type logoutUserResponseError = (logoutUserResponseDefault) & {
+  data: unknown;
+  status: number;
+};
+export type logoutUserResponseError = logoutUserResponseDefault & {
   headers: Headers;
 };
 
-export type logoutUserResponse = (logoutUserResponseError)
+export type logoutUserResponse = logoutUserResponseError;
 
 export const getLogoutUserUrl = () => {
+  return `/user/logout`;
+};
 
-
-
-
-  return `/user/logout`
-}
-
-export const logoutUser = async ( options?: RequestInit): Promise<logoutUserResponse> => {
-
-  return fetchClient<logoutUserResponse>(getLogoutUserUrl(),
-  {
+export const logoutUser = async (
+  options?: RequestInit,
+): Promise<logoutUserResponse> => {
+  return fetchClient<logoutUserResponse>(getLogoutUserUrl(), {
     ...options,
-    method: 'POST'
-
-
-  }
-);}
-
-
+    method: 'POST',
+  });
+};
 
 /**
  * Authenticates the user and returns a JWT bearer token.
  * @summary Login
  */
 export type loginUserResponse200 = {
-  data: UserLoginResponse
-  status: 200
-}
+  data: UserLoginResponse;
+  status: 200;
+};
 
 export type loginUserResponse401 = {
-  data: UserLoginResponse
-  status: 401
-}
-
-export type loginUserResponseSuccess = (loginUserResponse200) & {
-  headers: Headers;
-};
-export type loginUserResponseError = (loginUserResponse401) & {
-  headers: Headers;
+  data: UserLoginResponse;
+  status: 401;
 };
 
-export type loginUserResponse = (loginUserResponseSuccess | loginUserResponseError)
+export type loginUserResponseSuccess = loginUserResponse200 & {
+  headers: Headers;
+};
+export type loginUserResponseError = loginUserResponse401 & {
+  headers: Headers;
+};
+
+export type loginUserResponse =
+  | loginUserResponseSuccess
+  | loginUserResponseError;
 
 export const getLoginUserUrl = () => {
+  return `/user/login`;
+};
 
-
-
-
-  return `/user/login`
-}
-
-export const loginUser = async (userLoginRequest: UserLoginRequest, options?: RequestInit): Promise<loginUserResponse> => {
-
-  return fetchClient<loginUserResponse>(getLoginUserUrl(),
-  {
+export const loginUser = async (
+  userLoginRequest: UserLoginRequest,
+  options?: RequestInit,
+): Promise<loginUserResponse> => {
+  return fetchClient<loginUserResponse>(getLoginUserUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      userLoginRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(userLoginRequest),
+  });
+};
 
 /**
  * Marks a workout session as finished by setting the end time.
  * @summary Finish session
  */
 export type finishSessionResponse200 = {
-  data: WorkoutSessionResponse
-  status: 200
-}
+  data: WorkoutSessionResponse;
+  status: 200;
+};
 
 export type finishSessionResponse401 = {
-  data: WorkoutSessionResponse
-  status: 401
-}
+  data: WorkoutSessionResponse;
+  status: 401;
+};
 
 export type finishSessionResponse404 = {
-  data: WorkoutSessionResponse
-  status: 404
-}
-
-export type finishSessionResponseSuccess = (finishSessionResponse200) & {
-  headers: Headers;
-};
-export type finishSessionResponseError = (finishSessionResponse401 | finishSessionResponse404) & {
-  headers: Headers;
+  data: WorkoutSessionResponse;
+  status: 404;
 };
 
-export type finishSessionResponse = (finishSessionResponseSuccess | finishSessionResponseError)
+export type finishSessionResponseSuccess = finishSessionResponse200 & {
+  headers: Headers;
+};
+export type finishSessionResponseError = (
+  | finishSessionResponse401
+  | finishSessionResponse404
+) & {
+  headers: Headers;
+};
 
-export const getFinishSessionUrl = (sessionId: string,) => {
+export type finishSessionResponse =
+  | finishSessionResponseSuccess
+  | finishSessionResponseError;
 
+export const getFinishSessionUrl = (sessionId: string) => {
+  return `/workout-session/${sessionId}/finish`;
+};
 
-
-
-  return `/workout-session/${sessionId}/finish`
-}
-
-export const finishSession = async (sessionId: string,
-    finishWorkoutSessionRequest: FinishWorkoutSessionRequest, options?: RequestInit): Promise<finishSessionResponse> => {
-
-  return fetchClient<finishSessionResponse>(getFinishSessionUrl(sessionId),
-  {
+export const finishSession = async (
+  sessionId: string,
+  finishWorkoutSessionRequest: FinishWorkoutSessionRequest,
+  options?: RequestInit,
+): Promise<finishSessionResponse> => {
+  return fetchClient<finishSessionResponse>(getFinishSessionUrl(sessionId), {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      finishWorkoutSessionRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(finishWorkoutSessionRequest),
+  });
+};
 
 /**
  * Returns a single workout session by its UUID.
  * @summary Get session by ID
  */
 export type getSessionResponse200 = {
-  data: WorkoutSessionResponse
-  status: 200
-}
+  data: WorkoutSessionResponse;
+  status: 200;
+};
 
 export type getSessionResponse401 = {
-  data: WorkoutSessionResponse
-  status: 401
-}
+  data: WorkoutSessionResponse;
+  status: 401;
+};
 
 export type getSessionResponse404 = {
-  data: WorkoutSessionResponse
-  status: 404
-}
-
-export type getSessionResponseSuccess = (getSessionResponse200) & {
-  headers: Headers;
-};
-export type getSessionResponseError = (getSessionResponse401 | getSessionResponse404) & {
-  headers: Headers;
+  data: WorkoutSessionResponse;
+  status: 404;
 };
 
-export type getSessionResponse = (getSessionResponseSuccess | getSessionResponseError)
+export type getSessionResponseSuccess = getSessionResponse200 & {
+  headers: Headers;
+};
+export type getSessionResponseError = (
+  | getSessionResponse401
+  | getSessionResponse404
+) & {
+  headers: Headers;
+};
 
-export const getGetSessionUrl = (sessionId: string,) => {
+export type getSessionResponse =
+  | getSessionResponseSuccess
+  | getSessionResponseError;
 
+export const getGetSessionUrl = (sessionId: string) => {
+  return `/workout-session/${sessionId}`;
+};
 
-
-
-  return `/workout-session/${sessionId}`
-}
-
-export const getSession = async (sessionId: string, options?: RequestInit): Promise<getSessionResponse> => {
-
-  return fetchClient<getSessionResponse>(getGetSessionUrl(sessionId),
-  {
+export const getSession = async (
+  sessionId: string,
+  options?: RequestInit,
+): Promise<getSessionResponse> => {
+  return fetchClient<getSessionResponse>(getGetSessionUrl(sessionId), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 /**
  * Deletes a workout session owned by the authenticated user.
  * @summary Delete session
  */
 export type deleteSessionResponseDefault = {
-  data: unknown
-  status: number
-}
-
-;
-export type deleteSessionResponseError = (deleteSessionResponseDefault) & {
+  data: unknown;
+  status: number;
+};
+export type deleteSessionResponseError = deleteSessionResponseDefault & {
   headers: Headers;
 };
 
-export type deleteSessionResponse = (deleteSessionResponseError)
+export type deleteSessionResponse = deleteSessionResponseError;
 
-export const getDeleteSessionUrl = (sessionId: string,) => {
+export const getDeleteSessionUrl = (sessionId: string) => {
+  return `/workout-session/${sessionId}`;
+};
 
-
-
-
-  return `/workout-session/${sessionId}`
-}
-
-export const deleteSession = async (sessionId: string, options?: RequestInit): Promise<deleteSessionResponse> => {
-
-  return fetchClient<deleteSessionResponse>(getDeleteSessionUrl(sessionId),
-  {
+export const deleteSession = async (
+  sessionId: string,
+  options?: RequestInit,
+): Promise<deleteSessionResponse> => {
+  return fetchClient<deleteSessionResponse>(getDeleteSessionUrl(sessionId), {
     ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
+    method: 'DELETE',
+  });
+};
 
 /**
  * Returns a list of all available exercises.
  * @summary Get all exercises
  */
 export type getAllExercisesResponse200 = {
-  data: ExerciseDto[]
-  status: 200
-}
+  data: ExerciseDto[];
+  status: 200;
+};
 
 export type getAllExercisesResponse401 = {
-  data: ExerciseDto[]
-  status: 401
-}
+  data: ExerciseDto[];
+  status: 401;
+};
 
 export type getAllExercisesResponse404 = {
-  data: ExerciseDto[]
-  status: 404
-}
-
-export type getAllExercisesResponseSuccess = (getAllExercisesResponse200) & {
-  headers: Headers;
-};
-export type getAllExercisesResponseError = (getAllExercisesResponse401 | getAllExercisesResponse404) & {
-  headers: Headers;
+  data: ExerciseDto[];
+  status: 404;
 };
 
-export type getAllExercisesResponse = (getAllExercisesResponseSuccess | getAllExercisesResponseError)
+export type getAllExercisesResponseSuccess = getAllExercisesResponse200 & {
+  headers: Headers;
+};
+export type getAllExercisesResponseError = (
+  | getAllExercisesResponse401
+  | getAllExercisesResponse404
+) & {
+  headers: Headers;
+};
+
+export type getAllExercisesResponse =
+  | getAllExercisesResponseSuccess
+  | getAllExercisesResponseError;
 
 export const getGetAllExercisesUrl = () => {
+  return `/exercise`;
+};
 
-
-
-
-  return `/exercise`
-}
-
-export const getAllExercises = async ( options?: RequestInit): Promise<getAllExercisesResponse> => {
-
-  return fetchClient<getAllExercisesResponse>(getGetAllExercisesUrl(),
-  {
+export const getAllExercises = async (
+  options?: RequestInit,
+): Promise<getAllExercisesResponse> => {
+  return fetchClient<getAllExercisesResponse>(getGetAllExercisesUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 /**
  * Returns the details of a single exercise by its UUID.
  * @summary Get exercise by ID
  */
 export type getExerciseByIdResponse200 = {
-  data: ExerciseDto
-  status: 200
-}
+  data: ExerciseDto;
+  status: 200;
+};
 
 export type getExerciseByIdResponse401 = {
-  data: ExerciseDto
-  status: 401
-}
+  data: ExerciseDto;
+  status: 401;
+};
 
 export type getExerciseByIdResponse404 = {
-  data: ExerciseDto
-  status: 404
-}
-
-export type getExerciseByIdResponseSuccess = (getExerciseByIdResponse200) & {
-  headers: Headers;
-};
-export type getExerciseByIdResponseError = (getExerciseByIdResponse401 | getExerciseByIdResponse404) & {
-  headers: Headers;
+  data: ExerciseDto;
+  status: 404;
 };
 
-export type getExerciseByIdResponse = (getExerciseByIdResponseSuccess | getExerciseByIdResponseError)
+export type getExerciseByIdResponseSuccess = getExerciseByIdResponse200 & {
+  headers: Headers;
+};
+export type getExerciseByIdResponseError = (
+  | getExerciseByIdResponse401
+  | getExerciseByIdResponse404
+) & {
+  headers: Headers;
+};
 
-export const getGetExerciseByIdUrl = (id: string,) => {
+export type getExerciseByIdResponse =
+  | getExerciseByIdResponseSuccess
+  | getExerciseByIdResponseError;
 
+export const getGetExerciseByIdUrl = (id: string) => {
+  return `/exercise/${id}`;
+};
 
-
-
-  return `/exercise/${id}`
-}
-
-export const getExerciseById = async (id: string, options?: RequestInit): Promise<getExerciseByIdResponse> => {
-
-  return fetchClient<getExerciseByIdResponse>(getGetExerciseByIdUrl(id),
-  {
+export const getExerciseById = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getExerciseByIdResponse> => {
+  return fetchClient<getExerciseByIdResponse>(getGetExerciseByIdUrl(id), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  });
+};
 
 /**
  * Deletes a specific logged set by its UUID.
  * @summary Delete a set
  */
 export type deleteSetResponseDefault = {
-  data: unknown
-  status: number
-}
-
-;
-export type deleteSetResponseError = (deleteSetResponseDefault) & {
+  data: unknown;
+  status: number;
+};
+export type deleteSetResponseError = deleteSetResponseDefault & {
   headers: Headers;
 };
 
-export type deleteSetResponse = (deleteSetResponseError)
+export type deleteSetResponse = deleteSetResponseError;
 
-export const getDeleteSetUrl = (sessionId: string,
-    setId: string,) => {
+export const getDeleteSetUrl = (sessionId: string, setId: string) => {
+  return `/workout-session/${sessionId}/sets/${setId}`;
+};
 
-
-
-
-  return `/workout-session/${sessionId}/sets/${setId}`
-}
-
-export const deleteSet = async (sessionId: string,
-    setId: string, options?: RequestInit): Promise<deleteSetResponse> => {
-
-  return fetchClient<deleteSetResponse>(getDeleteSetUrl(sessionId,setId),
-  {
+export const deleteSet = async (
+  sessionId: string,
+  setId: string,
+  options?: RequestInit,
+): Promise<deleteSetResponse> => {
+  return fetchClient<deleteSetResponse>(getDeleteSetUrl(sessionId, setId), {
     ...options,
-    method: 'DELETE'
-
-
-  }
-);}
+    method: 'DELETE',
+  });
+};
