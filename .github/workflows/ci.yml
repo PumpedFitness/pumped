@@ -90,10 +90,10 @@ jobs:
         uses: ./.github/actions/setup-frontend
 
       - name: Lint
-        run: cd apps/frontend && bunx eslint .
+        run: bun run --cwd apps/frontend lint
 
       - name: Check formatting
-        run: cd apps/frontend && bunx prettier --check 'src/**/*.{ts,tsx}'
+        run: bun run --cwd apps/frontend format:check
 
   # ─── Publish Backend Image ────────────────────────────────────────────────────
   publish:
